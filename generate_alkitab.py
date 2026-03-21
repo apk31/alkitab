@@ -142,6 +142,18 @@ def main():
     with open(os.path.join("alkitab/data", "books.json"), 'w', encoding='utf-8') as f:
         json.dump(BOOKS, f, ensure_ascii=False, separators=(',', ':'))
 
+    # Inject BUILD_TIME ke sw.js supaya cache versi baru otomatis terbuat
+    import datetime
+    build_time = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    sw_path = os.path.join("alkitab", "sw.js")
+    if os.path.exists(sw_path):
+        with open(sw_path, 'r') as f:
+            sw = f.read()
+        sw = sw.replace("'__BUILD_TIME__'", f"'{build_time}'")
+        with open(sw_path, 'w') as f:
+            f.write(sw)
+        print(f"\n✓ sw.js BUILD_TIME diset ke: {build_time}")
+
     print("\n✅ Semua selesai! Sekarang buka alkitab/index.html di browser Anda.")
 
 if __name__ == "__main__":

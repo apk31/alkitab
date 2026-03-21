@@ -480,6 +480,41 @@
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* ── Update Banner ── */
+    #update-banner {
+      display: none;
+      position: fixed;
+      top: 12px; left: 50%; transform: translateX(-50%);
+      background: var(--ink);
+      color: var(--parchment);
+      border-radius: 12px;
+      padding: 12px 18px;
+      z-index: 400;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.45);
+      white-space: nowrap;
+      font-size: .9rem;
+      font-family: var(--font-body);
+    }
+    #update-banner.visible { display: flex; }
+    #update-reload-btn {
+      padding: 6px 16px;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: 7px;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: .88rem;
+      cursor: pointer;
+    }
+    #update-dismiss-btn {
+      background: none; border: none;
+      color: rgba(250,246,239,.4);
+      font-size: 1rem; cursor: pointer; padding: 2px 4px;
+    }
+
     /* ── PWA Install Banner ── */
     #install-banner {
       display: none;
@@ -521,7 +556,7 @@
     /* ── Reader ── */
     #reader {
       flex: 1;
-      max-width: 980px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 40px 32px 100px;
       width: 100%;
@@ -832,6 +867,13 @@
 
 <!-- Toast -->
 <div id="toast"></div>
+
+<!-- Update Banner -->
+<div id="update-banner">
+  <span>✦ Versi baru tersedia</span>
+  <button id="update-reload-btn">Perbarui</button>
+  <button id="update-dismiss-btn">✕</button>
+</div>
 
 <!-- PWA Install Banner -->
 <div id="install-banner">
@@ -1585,11 +1627,47 @@ window.addEventListener('appinstalled', () => {
   showToast('✓ Alkitab TB sudah diinstall');
 });
 
-// ── Service Worker ────────────────────────────────────────────
+// ── Service Worker + Auto Update ─────────────────────────────
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then(reg => {
-    console.log('SW registered:', reg.scope);
-  }).catch(err => console.warn('SW failed:', err));
+    console.log('[SW] Registered:', reg.scope);
+
+    // Cek update setiap kali halaman difokuskan
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') reg.update();
+    });
+
+    // Saat SW baru menunggu → tampilkan notif update
+    const onNewSW = (sw) => {
+      const updateBanner = document.getElementById('update-banner');
+      if (!updateBanner) return;
+      updateBanner.classList.add('visible');
+
+      document.getElementById('update-reload-btn').addEventListener('click', () => {
+        sw.postMessage({ type: 'SKIP_WAITING' });
+      });
+      document.getElementById('update-dismiss-btn').addEventListener('click', () => {
+        updateBanner.classList.remove('visible');
+      });
+    };
+
+    if (reg.waiting) onNewSW(reg.waiting);
+    reg.addEventListener('updatefound', () => {
+      const newSW = reg.installing;
+      newSW.addEventListener('statechange', () => {
+        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          onNewSW(newSW);
+        }
+      });
+    });
+
+    // Reload otomatis saat SW baru aktif
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) { refreshing = true; window.location.reload(); }
+    });
+
+  }).catch(err => console.warn('[SW] Failed:', err));
 }
 
 // ── Init ─────────────────────────────────────────────────────
