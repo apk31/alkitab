@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alkitab – Terjemahan Baru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --parchment:   #faf6ef;
+      --parchment2:  #f3ece0;
+      --ink:         #1a1209;
+      --ink-mid:     #3d2d14;
+      --ink-light:   #7a6040;
+      --gold:        #b8892a;
+      --gold-light:  #d4a843;
+      --gold-pale:   #f0dfa8;
+      --red-accent:  #8b2020;
+      --sidebar-w:   280px;
+      --font-body:   'Crimson Pro', Georgia, serif;
+      --font-display:'Playfair Display', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--parchment);
+      color: var(--ink);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--ink);
+      color: var(--parchment);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+    }
+    #sidebar-header {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    #sidebar-header h1 {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      line-height: 1.2;
+    }
+    #sidebar-header p {
+      font-size: .78rem;
+      color: rgba(250,246,239,.4);
+      margin-top: 4px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    #testament-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      background: none;
+      border: none;
+      color: rgba(250,246,239,.5);
+      font-family: var(--font-body);
+      font-size: .78rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color .2s, background .2s;
+    }
+    .tab-btn.active {
+      color: var(--gold-light);
+      background: rgba(212,168,67,.08);
+      border-bottom: 2px solid var(--gold-light);
+    }
+    #search-wrap {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    #search-input {
+      width: 100%;
+      padding: 7px 12px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 6px;
+      color: var(--parchment);
+      font-family: var(--font-body);
+      font-size: .88rem;
+      outline: none;
+      transition: border .2s;
+    }
+    #search-input::placeholder { color: rgba(250,246,239,.3); }
+    #search-input:focus { border-color: var(--gold); }
+    #book-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+    #book-list::-webkit-scrollbar { width: 4px; }
+    #book-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+    .book-item {
+      display: flex;
+      align-items: center;
+      padding: 9px 24px;
+      cursor: pointer;
+      font-size: .92rem;
+      color: rgba(250,246,239,.72);
+      transition: background .15s, color .15s;
+      border-left: 3px solid transparent;
+    }
+    .book-item:hover { background: rgba(255,255,255,.06); color: var(--parchment); }
+    .book-item.active {
+      background: rgba(212,168,67,.1);
+      color: var(--gold-light);
+      border-left-color: var(--gold);
+    }
+    .book-abbr {
+      width: 42px;
+      font-size: .74rem;
+      color: rgba(250,246,239,.3);
+      flex-shrink: 0;
+    }
+    .book-item.active .book-abbr { color: var(--gold); }
+
+    /* ── Hamburger ── */
+    #hamburger {
+      display: none;
+      position: fixed;
+      top: 14px; left: 14px;
+      z-index: 200;
+      width: 40px; height: 40px;
+      background: var(--ink);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+    }
+    #hamburger span {
+      display: block;
+      width: 20px; height: 2px;
+      background: var(--gold-light);
+      border-radius: 2px;
+    }
+
+    /* ── Main ── */
+    #main {
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Topbar ── */
+    #topbar {
+      position: sticky;
+      top: 0;
+      background: rgba(250,246,239,.93);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(184,137,42,.2);
+      padding: 12px 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+    }
+    #chapter-label {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--ink-mid);
+      font-weight: 600;
+      min-width: 170px;
+      flex-shrink: 0;
+    }
+    #chapter-select {
+      padding: 5px 10px;
+      border: 1px solid rgba(184,137,42,.35);
+      border-radius: 6px;
+      background: var(--parchment);
+      font-family: var(--font-body);
+      font-size: .88rem;
+      color: var(--ink-mid);
+      cursor: pointer;
+      outline: none;
+    }
+    .nav-btn {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      background: none;
+      border: 1px solid rgba(184,137,42,.3);
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--gold);
+      font-size: 1.1rem;
+      transition: background .15s, border .15s;
+    }
+    .nav-btn:hover { background: var(--gold-pale); border-color: var(--gold); }
+    .nav-btn:disabled { opacity: .3; cursor: default; }
+    #font-controls { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .font-btn {
+      width: 30px; height: 30px;
+      background: none;
+      border: 1px solid rgba(184,137,42,.3);
+      border-radius: 6px;
+      color: var(--gold);
+      cursor: pointer;
+      font-size: .9rem;
+      transition: background .15s;
+    }
+    .font-btn:hover { background: var(--gold-pale); }
+
+    /* ── Reader ── */
+    #reader {
+      flex: 1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 40px 32px 100px;
+      width: 100%;
+    }
+    #book-title {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    #chapter-subtitle {
+      font-family: var(--font-body);
+      font-size: 1.25rem;
+      font-weight: 500;
+      font-style: normal;
+      color: var(--gold);
+      text-align: center;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-pale), transparent);
+    }
+    .divider-symbol { color: var(--gold); font-size: 1.2rem; }
+    #verses-container {
+      font-size: 1.18rem;
+      line-height: 1.95;
+      color: var(--ink-mid);
+    }
+    .verse-number {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold);
+      vertical-align: super;
+      margin-right: 3px;
+      margin-left: 10px;
+      line-height: 1;
+      letter-spacing: 0;
+      cursor: pointer;
+      transition: color .15s;
+      user-select: none;
+      background: rgba(184,137,42,.12);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .verse-number:hover { color: var(--red-accent); }
+    .verse-number.v1 { margin-left: 0; }
+    .verse-text { display: inline; }
+    /* Sub-bab (index 0 / v == 0) */
+    .section-heading {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      text-align: center;
+      margin: 28px 0 10px;
+      letter-spacing: .01em;
+    }
+    .highlighted-verse .verse-text {
+      background: var(--gold-pale);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    /* Loading / Welcome / Error */
+    #loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--ink-light);
+      font-style: italic;
+    }
+    .spinner {
+      display: inline-block;
+      width: 28px; height: 28px;
+      border: 3px solid var(--gold-pale);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #welcome-screen {
+      text-align: center;
+      padding: 80px 32px;
+    }
+    .welcome-cross { font-size: 3rem; color: var(--gold-pale); margin-bottom: 24px; }
+    #welcome-screen h2 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    #welcome-screen p {
+      font-size: 1.1rem;
+      color: var(--ink-light);
+      font-style: italic;
+      max-width: 400px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .verse-card {
+      background: var(--parchment2);
+      border: 1px solid rgba(184,137,42,.2);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      padding: 24px 32px;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    .verse-card blockquote {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--ink-mid);
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+    .verse-card cite {
+      font-size: .85rem;
+      color: var(--gold);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    #error-msg {
+      text-align: center;
+      padding: 60px;
+      color: var(--red-accent);
+      font-style: italic;
+    }
+
+    /* Fade in */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeUp .35s ease forwards; }
+
+    /* Overlay */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 90;
+    }
+    #overlay.visible { display: block; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.35); }
+      #main { margin-left: 0; }
+      #hamburger { display: flex; }
+      #topbar { padding: 12px 12px 12px 60px; flex-wrap: wrap; gap: 8px; }
+      #chapter-label { min-width: unset; font-size: .9rem; }
+      #reader { padding: 24px 14px 80px; }
+      #book-title { font-size: 1.8rem; }
+      #font-controls { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<aside id="sidebar">
+  <div id="sidebar-header">
+    <h1>✝ Alkitab</h1>
+    <p>Terjemahan Baru · 1974</p>
+  </div>
+  <div id="testament-tabs">
+    <button class="tab-btn active" data-t="old">Perjanjian Lama</button>
+    <button class="tab-btn" data-t="new">Perjanjian Baru</button>
+  </div>
+  <div id="search-wrap">
+    <input type="text" id="search-input" placeholder="Cari kitab…" autocomplete="off" />
+  </div>
+  <div id="book-list"></div>
+</aside>
+
+<div id="overlay"></div>
+<button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+
+<div id="main">
+  <header id="topbar">
+    <span id="chapter-label">Pilih kitab di kiri</span>
+    <select id="chapter-select" style="display:none"></select>
+    <button class="nav-btn" id="prev-btn" disabled>&#8592;</button>
+    <button class="nav-btn" id="next-btn" disabled>&#8594;</button>
+    <div id="font-controls">
+      <button class="font-btn" id="font-dec" title="Perkecil">A−</button>
+      <button class="font-btn" id="font-inc" title="Perbesar">A+</button>
+    </div>
+  </header>
+
+  <main id="reader">
+    <div id="welcome-screen">
+      <div class="welcome-cross">✝</div>
+      <h2>Alkitab Terjemahan Baru</h2>
+      <p>Pilih sebuah kitab dari menu untuk mulai membaca Firman Tuhan.</p>
+      <div class="verse-card">
+        <blockquote>"Firman-Mu adalah pelita bagi kakiku dan terang bagi jalanku."</blockquote>
+        <cite>— Mazmur 119:105</cite>
+      </div>
+    </div>
+
+    <div id="loading" style="display:none">
+      <div class="spinner"></div>
+      <p>Memuat…</p>
+    </div>
+
+    <div id="error-msg" style="display:none">
+      <p>⚠️ Gagal memuat pasal.<br>Pastikan file data/ sudah ada di folder yang sama dengan index.html.</p>
+    </div>
+
+    <div id="chapter-content" style="display:none">
+      <h2 id="book-title"></h2>
+      <div id="chapter-subtitle"></div>
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+      <div id="verses-container"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── Book list ────────────────────────────────────────────────
+const BOOKS = [
+  {no:1,abbr:"Kej",name:"Kejadian",chapter:50,t:"old"},
+  {no:2,abbr:"Kel",name:"Keluaran",chapter:40,t:"old"},
+  {no:3,abbr:"Ima",name:"Imamat",chapter:27,t:"old"},
+  {no:4,abbr:"Bil",name:"Bilangan",chapter:36,t:"old"},
+  {no:5,abbr:"Ula",name:"Ulangan",chapter:34,t:"old"},
+  {no:6,abbr:"Yos",name:"Yosua",chapter:24,t:"old"},
+  {no:7,abbr:"Hak",name:"Hakim-hakim",chapter:21,t:"old"},
+  {no:8,abbr:"Rut",name:"Rut",chapter:4,t:"old"},
+  {no:9,abbr:"1Sam",name:"1 Samuel",chapter:31,t:"old"},
+  {no:10,abbr:"2Sam",name:"2 Samuel",chapter:24,t:"old"},
+  {no:11,abbr:"1Raj",name:"1 Raja-Raja",chapter:22,t:"old"},
+  {no:12,abbr:"2Raj",name:"2 Raja-Raja",chapter:25,t:"old"},
+  {no:13,abbr:"1Taw",name:"1 Tawarikh",chapter:29,t:"old"},
+  {no:14,abbr:"2Taw",name:"2 Tawarikh",chapter:36,t:"old"},
+  {no:15,abbr:"Ezr",name:"Ezra",chapter:10,t:"old"},
+  {no:16,abbr:"Neh",name:"Nehemia",chapter:13,t:"old"},
+  {no:17,abbr:"Est",name:"Ester",chapter:10,t:"old"},
+  {no:18,abbr:"Ayb",name:"Ayub",chapter:42,t:"old"},
+  {no:19,abbr:"Maz",name:"Mazmur",chapter:150,t:"old"},
+  {no:20,abbr:"Ams",name:"Amsal",chapter:31,t:"old"},
+  {no:21,abbr:"Pkh",name:"Pengkhotbah",chapter:12,t:"old"},
+  {no:22,abbr:"Kid",name:"Kidung Agung",chapter:8,t:"old"},
+  {no:23,abbr:"Yes",name:"Yesaya",chapter:66,t:"old"},
+  {no:24,abbr:"Yer",name:"Yeremia",chapter:52,t:"old"},
+  {no:25,abbr:"Rat",name:"Ratapan",chapter:5,t:"old"},
+  {no:26,abbr:"Yeh",name:"Yehezkiel",chapter:48,t:"old"},
+  {no:27,abbr:"Dan",name:"Daniel",chapter:12,t:"old"},
+  {no:28,abbr:"Hos",name:"Hosea",chapter:14,t:"old"},
+  {no:29,abbr:"Yoe",name:"Yoel",chapter:3,t:"old"},
+  {no:30,abbr:"Amo",name:"Amos",chapter:9,t:"old"},
+  {no:31,abbr:"Oba",name:"Obaja",chapter:1,t:"old"},
+  {no:32,abbr:"Yun",name:"Yunus",chapter:4,t:"old"},
+  {no:33,abbr:"Mik",name:"Mikha",chapter:7,t:"old"},
+  {no:34,abbr:"Nah",name:"Nahum",chapter:3,t:"old"},
+  {no:35,abbr:"Hab",name:"Habakuk",chapter:3,t:"old"},
+  {no:36,abbr:"Zef",name:"Zefanya",chapter:3,t:"old"},
+  {no:37,abbr:"Hag",name:"Hagai",chapter:2,t:"old"},
+  {no:38,abbr:"Zak",name:"Zakharia",chapter:14,t:"old"},
+  {no:39,abbr:"Mal",name:"Maleakhi",chapter:4,t:"old"},
+  {no:40,abbr:"Mat",name:"Matius",chapter:28,t:"new"},
+  {no:41,abbr:"Mar",name:"Markus",chapter:16,t:"new"},
+  {no:42,abbr:"Luk",name:"Lukas",chapter:24,t:"new"},
+  {no:43,abbr:"Yoh",name:"Yohanes",chapter:21,t:"new"},
+  {no:44,abbr:"Kis",name:"Kisah Para Rasul",chapter:28,t:"new"},
+  {no:45,abbr:"Rom",name:"Roma",chapter:16,t:"new"},
+  {no:46,abbr:"1Kor",name:"1 Korintus",chapter:16,t:"new"},
+  {no:47,abbr:"2Kor",name:"2 Korintus",chapter:13,t:"new"},
+  {no:48,abbr:"Gal",name:"Galatia",chapter:6,t:"new"},
+  {no:49,abbr:"Efe",name:"Efesus",chapter:6,t:"new"},
+  {no:50,abbr:"Flp",name:"Filipi",chapter:4,t:"new"},
+  {no:51,abbr:"Kol",name:"Kolose",chapter:4,t:"new"},
+  {no:52,abbr:"1Tes",name:"1 Tesalonika",chapter:5,t:"new"},
+  {no:53,abbr:"2Tes",name:"2 Tesalonika",chapter:3,t:"new"},
+  {no:54,abbr:"1Tim",name:"1 Timotius",chapter:6,t:"new"},
+  {no:55,abbr:"2Tim",name:"2 Timotius",chapter:4,t:"new"},
+  {no:56,abbr:"Tit",name:"Titus",chapter:3,t:"new"},
+  {no:57,abbr:"Flm",name:"Filemon",chapter:1,t:"new"},
+  {no:58,abbr:"Ibr",name:"Ibrani",chapter:13,t:"new"},
+  {no:59,abbr:"Yak",name:"Yakobus",chapter:5,t:"new"},
+  {no:60,abbr:"1Pet",name:"1 Petrus",chapter:5,t:"new"},
+  {no:61,abbr:"2Pet",name:"2 Petrus",chapter:3,t:"new"},
+  {no:62,abbr:"1Yoh",name:"1 Yohanes",chapter:5,t:"new"},
+  {no:63,abbr:"2Yoh",name:"2 Yohanes",chapter:1,t:"new"},
+  {no:64,abbr:"3Yoh",name:"3 Yohanes",chapter:1,t:"new"},
+  {no:65,abbr:"Yud",name:"Yudas",chapter:1,t:"new"},
+  {no:66,abbr:"Wah",name:"Wahyu",chapter:22,t:"new"},
+];
+
+// ── State ────────────────────────────────────────────────────
+let testament = 'old';
+let curBook = null;
+let curChapter = 1;
+let fontSize = 1.18;
+const cache = {}; // abbr -> {ch: [...verses]}
+
+// ── DOM ──────────────────────────────────────────────────────
+const bookListEl     = document.getElementById('book-list');
+const searchInput    = document.getElementById('search-input');
+const chapterSelect  = document.getElementById('chapter-select');
+const chapterLabel   = document.getElementById('chapter-label');
+const prevBtn        = document.getElementById('prev-btn');
+const nextBtn        = document.getElementById('next-btn');
+const welcomeScreen  = document.getElementById('welcome-screen');
+const loadingEl      = document.getElementById('loading');
+const errorEl        = document.getElementById('error-msg');
+const chapterContent = document.getElementById('chapter-content');
+const bookTitleEl    = document.getElementById('book-title');
+const chapterSubEl   = document.getElementById('chapter-subtitle');
+const versesEl       = document.getElementById('verses-container');
+const sidebar        = document.getElementById('sidebar');
+const overlay        = document.getElementById('overlay');
+const hamburger      = document.getElementById('hamburger');
+
+// ── Render book list ─────────────────────────────────────────
+function renderBooks() {
+  const q = searchInput.value.toLowerCase();
+  const filtered = BOOKS.filter(b =>
+    b.t === testament && b.name.toLowerCase().includes(q)
+  );
+  bookListEl.innerHTML = '';
+  filtered.forEach(book => {
+    const div = document.createElement('div');
+    div.className = 'book-item' + (curBook && curBook.abbr === book.abbr ? ' active' : '');
+    div.innerHTML = `<span class="book-abbr">${book.abbr}</span>${book.name}`;
+    div.addEventListener('click', () => {
+      selectBook(book);
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+    bookListEl.appendChild(div);
+  });
+}
+
+// ── Select book ──────────────────────────────────────────────
+function selectBook(book, ch = 1) {
+  curBook = book;
+  curChapter = ch;
+  renderBooks();
+  // Build chapter dropdown
+  chapterSelect.innerHTML = '';
+  for (let i = 1; i <= book.chapter; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `Pasal ${i}`;
+    if (i === ch) opt.selected = true;
+    chapterSelect.appendChild(opt);
+  }
+  chapterSelect.style.display = 'inline-block';
+  chapterLabel.textContent = book.name;
+  loadChapter();
+}
+
+// ── Load chapter ─────────────────────────────────────────────
+async function loadChapter() {
+  showLoading();
+  prevBtn.disabled = curChapter <= 1;
+  nextBtn.disabled = curChapter >= curBook.chapter;
+  chapterSelect.value = curChapter;
+
+  try {
+    let bookData = cache[curBook.abbr];
+    if (!bookData) {
+      const res = await fetch(`data/${curBook.abbr}.json`);
+      if (!res.ok) throw new Error('File not found');
+      bookData = await res.json();
+      cache[curBook.abbr] = bookData;
+    }
+    const verses = bookData[curChapter] || [];
+    renderVerses(verses);
+  } catch (e) {
+    console.error(e);
+    showError();
+  }
+}
+
+// ── Render verses ────────────────────────────────────────────
+function renderVerses(verses) {
+  bookTitleEl.textContent = curBook.name;
+  chapterSubEl.textContent = `Pasal ${curChapter}`;
+  versesEl.innerHTML = '';
+  versesEl.style.fontSize = fontSize + 'rem';
+
+  if (!verses.length) {
+    versesEl.textContent = '(Data pasal ini tidak tersedia)';
+    showContent();
+    return;
+  }
+
+  let firstVerse = true;
+
+  verses.forEach((v) => {
+    // v.v == 0  →  sub-bab / judul perikop
+    if (v.v == 0) {
+      const heading = document.createElement('span');
+      heading.className = 'section-heading';
+      heading.textContent = v.t;
+      versesEl.appendChild(heading);
+      return;
+    }
+
+    const span = document.createElement('span');
+
+    const numEl = document.createElement('sup');
+    numEl.className = 'verse-number' + (firstVerse ? ' v1' : '');
+    numEl.textContent = v.v;
+    numEl.addEventListener('click', () => {
+      document.querySelectorAll('.highlighted-verse').forEach(el => el.classList.remove('highlighted-verse'));
+      span.classList.add('highlighted-verse');
+      span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    const textEl = document.createElement('span');
+    textEl.className = 'verse-text';
+    textEl.textContent = v.t + ' ';
+
+    span.appendChild(numEl);
+    span.appendChild(textEl);
+    versesEl.appendChild(span);
+    firstVerse = false;
+  });
+
+  showContent();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── UI helpers ───────────────────────────────────────────────
+function showLoading() {
+  welcomeScreen.style.display = 'none';
+  chapterContent.style.display = 'none';
+  errorEl.style.display = 'none';
+  loadingEl.style.display = 'block';
+}
+function showContent() {
+  loadingEl.style.display = 'none';
+  errorEl.style.display = 'none';
+  welcomeScreen.style.display = 'none';
+  chapterContent.style.display = 'block';
+  chapterContent.classList.remove('fade-in');
+  void chapterContent.offsetWidth;
+  chapterContent.classList.add('fade-in');
+}
+function showError() {
+  loadingEl.style.display = 'none';
+  chapterContent.style.display = 'none';
+  errorEl.style.display = 'block';
+}
+
+// ── Nav ──────────────────────────────────────────────────────
+prevBtn.addEventListener('click', () => {
+  if (curChapter > 1) { curChapter--; loadChapter(); chapterSelect.value = curChapter; }
+});
+nextBtn.addEventListener('click', () => {
+  if (curChapter < curBook.chapter) { curChapter++; loadChapter(); chapterSelect.value = curChapter; }
+});
+chapterSelect.addEventListener('change', () => {
+  curChapter = parseInt(chapterSelect.value);
+  loadChapter();
+});
+
+// ── Testament tabs ───────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    testament = btn.dataset.t;
+    searchInput.value = '';
+    renderBooks();
+  });
+});
+
+// ── Search ───────────────────────────────────────────────────
+searchInput.addEventListener('input', renderBooks);
+
+// ── Font size ─────────────────────────────────────────────────
+document.getElementById('font-inc').addEventListener('click', () => {
+  fontSize = Math.min(fontSize + .1, 1.9);
+  versesEl.style.fontSize = fontSize + 'rem';
+});
+document.getElementById('font-dec').addEventListener('click', () => {
+  fontSize = Math.max(fontSize - .1, .85);
+  versesEl.style.fontSize = fontSize + 'rem';
+});
+
+// ── Mobile sidebar ────────────────────────────────────────────
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('visible');
+});
+overlay.addEventListener('click', closeSidebar);
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+}
+
+// ── Keyboard ─────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.target === searchInput) return;
+  if (e.key === 'ArrowRight') nextBtn.click();
+  if (e.key === 'ArrowLeft')  prevBtn.click();
+});
+
+// ── Init ─────────────────────────────────────────────────────
+renderBooks();
+</script>
+</body>
+</html>
