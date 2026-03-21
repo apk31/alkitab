@@ -4,14 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alkitab – Terjemahan Baru</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    onerror="document.documentElement.classList.add('no-fa')" />
+  <style>
+  /* ── Icon system (no CDN needed) ── */
+  .ic { display:inline-block; width:1em; height:1em; vertical-align:-.125em; fill:currentColor; }
+</style>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1a1209" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Alkitab TB" />
-  <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
@@ -807,23 +809,23 @@
 <div id="overlay"></div>
 <nav id="bottom-nav" role="navigation" aria-label="Navigasi bawah">
   <button class="bnav-btn active" id="bnav-books" aria-label="Daftar Kitab">
-    <span class="bnav-icon"><i class="fa-solid fa-book-open"></i></span>
+    <span class="bnav-icon"><svg class="ic" viewBox="0 0 576 512"><path d="M249.6 471.5c10.8 3.8 22.4-4.1 22.4-15.5V78.6c0-4.1-1.6-8.1-4.6-11C247.4 49.6 200.5 32 144 32C96.5 32 56.6 47.8 27.5 61.5A48 48 0 0 0 0 104.3V375.7c0 15.5 16.3 25.4 29.9 18.7C56.8 381.9 93.2 368 144 368c44.1 0 88.2 12 124.8 26.3l-19.2-12.8zM327 471.5C363.6 457.2 407.7 445.1 432 444.9V112c-44.5 0-84.3 15.8-113.4 29.5V456c0 11.4 11.6 19.3 22.4 15.5zM432 480c26.2 0 65.7 13.2 105.8 27.4 11.9 4.3 24.2-4.3 24.2-16.9V104.3a48 48 0 0 0-27.5-43.2C505.4 47.8 465.5 32 416 32c-56.5 0-103.4 17.6-123.4 35.6-3 2.9-4.6 6.9-4.6 11V456c0 11.4 11.6 19.3 22.4 15.5C350.4 457.2 394.5 444.9 432 480z"/></svg></span>
     <span>Kitab</span>
   </button>
   <button class="bnav-btn" id="bnav-prev" aria-label="Pasal sebelumnya">
-    <span class="bnav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+    <span class="bnav-icon"><svg class="ic" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
     <span>Sebelumnya</span>
   </button>
   <button class="bnav-btn" id="bnav-next" aria-label="Pasal berikutnya">
-    <span class="bnav-icon"><i class="fa-solid fa-arrow-right"></i></span>
+    <span class="bnav-icon"><svg class="ic" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L214.6 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg></span>
     <span>Berikutnya</span>
   </button>
   <button class="bnav-btn" id="bnav-search" aria-label="Cari Ayat">
-    <span class="bnav-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+    <span class="bnav-icon"><svg class="ic" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></span>
     <span>Cari</span>
   </button>
   <button class="bnav-btn" id="bnav-bookmark" aria-label="Bookmark">
-    <span class="bnav-icon"><i class="fa-solid fa-bookmark"></i></span>
+    <span class="bnav-icon"><svg class="ic" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg></span>
     <span>Simpan</span>
   </button>
 </nav>
@@ -885,6 +887,82 @@
   </main>
 </div>
 
+<!-- ── Search Panel ── -->
+<div id="search-panel">
+  <div id="search-panel-header">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <h2><svg class="ic" style="color:var(--gold);margin-right:8px;width:.9em;height:.9em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>Cari Ayat</h2>
+      <button id="ft-close-btn" title="Tutup"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
+    </div>
+    <div id="ft-search-wrap">
+      <input type="search" id="ft-input" placeholder="Ketik kata atau frasa…" autocomplete="off" />
+    </div>
+    <div id="ft-status">Ketuk tombol Cari di bawah untuk memulai</div>
+  </div>
+  <div id="ft-results"></div>
+</div>
+
+<!-- ── Bookmark Panel ── -->
+<div id="bookmark-panel">
+  <div id="bookmark-panel-header">
+    <h2><svg class="ic" style="color:var(--gold);margin-right:8px;width:.9em;height:.9em" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>Bookmark</h2>
+    <button id="bm-close-btn" title="Tutup"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
+  </div>
+  <div id="bookmark-list"></div>
+</div>
+
+
+
+
+<script>
+/* MiniSearch inline - no CDN needed */
+class MiniSearch {
+  constructor(opts) {
+    this._fields = opts.fields || [];
+    this._store  = opts.storeFields || [];
+    this._docs   = [];
+    this._idx    = new Map();
+  }
+  _tokenize(str) {
+    return String(str).toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9 ]/g,' ')
+      .split(' ').filter(t => t.length > 1);
+  }
+  addAll(docs) {
+    for (const doc of docs) {
+      const stored = { id: doc.id };
+      for (const f of this._store) stored[f] = doc[f];
+      this._docs[doc.id] = stored;
+      const tokens = new Set();
+      for (const f of this._fields) {
+        if (doc[f]) for (const t of this._tokenize(doc[f])) tokens.add(t);
+      }
+      for (const t of tokens) {
+        if (!this._idx.has(t)) this._idx.set(t, new Set());
+        this._idx.get(t).add(doc.id);
+      }
+    }
+  }
+  search(query, opts) {
+    const limit = (opts && opts.limit) || 20;
+    const terms = this._tokenize(query);
+    if (!terms.length) return [];
+    const scores = new Map();
+    for (const term of terms) {
+      for (const [tok, ids] of this._idx) {
+        if (tok === term || tok.startsWith(term)) {
+          const w = tok === term ? 2 : 1;
+          for (const id of ids) scores.set(id, (scores.get(id) || 0) + w);
+        }
+      }
+    }
+    return [...scores.entries()]
+      .sort((a,b) => b[1]-a[1]).slice(0, limit)
+      .map(([id]) => Object.assign({}, this._docs[id]));
+  }
+}
+</script>
 <script>
 // ── Book list ────────────────────────────────────────────────
 const BOOKS = [
@@ -971,6 +1049,7 @@ let deferredInstallPrompt = null;
 const DB_NAME = 'alkitab-tb';
 const DB_VER  = 1;
 let db = null;
+
 function openDB() {
   return new Promise((res, rej) => {
     const req = indexedDB.open(DB_NAME, DB_VER);
@@ -1157,7 +1236,7 @@ async function renderVerses(verses) {
     // Bookmark button
     const bmBtn = document.createElement('button');
     bmBtn.className = 'verse-bm-btn' + (savedIds.has(v.v) ? ' saved' : '');
-    bmBtn.innerHTML = '<i class="fa-solid fa-bookmark"></i>';
+    bmBtn.innerHTML = '<svg class="ic" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>';
     bmBtn.title = 'Simpan bookmark';
     bmBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -1387,7 +1466,7 @@ async function renderBookmarkList() {
   const all = await dbGetAll('bookmarks');
   all.sort((a, b) => b.date - a.date);
   if (!all.length) {
-    listEl.innerHTML = '<div class="bm-empty"><i class="fa-regular fa-bookmark" style="font-size:2rem;display:block;margin-bottom:12px;color:var(--gold-pale)"></i>Belum ada bookmark.<br>Ketuk nomor ayat lalu ikon bookmark untuk menyimpan.</div>';
+    listEl.innerHTML = '<div class="bm-empty"><svg class="ic" style="font-size:2rem;width:2rem;height:2rem;display:block;margin-bottom:12px;color:var(--gold-pale)" viewBox="0 0 384 512"><path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/></svg>Belum ada bookmark.<br>Ketuk nomor ayat lalu ikon bookmark untuk menyimpan.</div>';
     return;
   }
   listEl.innerHTML = '';
@@ -1395,12 +1474,12 @@ async function renderBookmarkList() {
     const item = document.createElement('div');
     item.className = 'bm-item';
     item.innerHTML = `
-      <span class="bm-icon"><i class="fa-solid fa-bookmark"></i></span>
+      <span class="bm-icon"><svg class="ic" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg></span>
       <div class="bm-info">
         <div class="bm-ref">${bm.bookName} ${bm.chapter}:${bm.verse}</div>
         <div class="bm-preview">${bm.text}</div>
       </div>
-      <button class="bm-delete" data-id="${bm.id}" title="Hapus bookmark"><i class="fa-solid fa-trash"></i></button>`;
+      <button class="bm-delete" data-id="${bm.id}" title="Hapus bookmark"><svg class="ic" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button>`;
     item.querySelector('.bm-info').addEventListener('click', () => {
       const book = BOOKS.find(b => b.abbr === bm.book);
       closeBookmarkPanel();
@@ -1437,12 +1516,12 @@ document.getElementById('bm-close-btn').addEventListener('click', closeBookmarkP
   const btn = document.createElement('button');
   btn.className = 'font-btn';
   btn.title = 'Cari Ayat (Ctrl+F)';
-  btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>';
+  btn.innerHTML = '<svg class="ic" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>';
   btn.addEventListener('click', openSearchPanel);
   const bmBtn = document.createElement('button');
   bmBtn.className = 'font-btn';
   bmBtn.title = 'Bookmark';
-  bmBtn.innerHTML = '<i class="fa-solid fa-bookmark"></i>';
+  bmBtn.innerHTML = '<svg class="ic" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>';
   bmBtn.addEventListener('click', openBookmarkPanel);
   fontCtrl.prepend(bmBtn);
   fontCtrl.prepend(btn);
@@ -1519,30 +1598,6 @@ if ('serviceWorker' in navigator) {
   renderBooks();
 })();
 </script>
-
-<!-- ── Search Panel ── -->
-<div id="search-panel">
-  <div id="search-panel-header">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <h2><i class="fa-solid fa-magnifying-glass" style="color:var(--gold);margin-right:8px;font-size:.9em"></i>Cari Ayat</h2>
-      <button id="ft-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i><span class="icon-fallback">✕</span></button>
-    </div>
-    <div id="ft-search-wrap">
-      <input type="search" id="ft-input" placeholder="Ketik kata atau frasa…" autocomplete="off" />
-    </div>
-    <div id="ft-status">Ketuk tombol Cari di bawah untuk memulai</div>
-  </div>
-  <div id="ft-results"></div>
-</div>
-
-<!-- ── Bookmark Panel ── -->
-<div id="bookmark-panel">
-  <div id="bookmark-panel-header">
-    <h2><i class="fa-solid fa-bookmark" style="color:var(--gold);margin-right:8px;font-size:.9em"></i>Bookmark</h2>
-    <button id="bm-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i><span class="icon-fallback">✕</span></button>
-  </div>
-  <div id="bookmark-list"></div>
-</div>
 
 </body>
 </html>
