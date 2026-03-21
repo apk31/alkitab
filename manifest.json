@@ -2,7 +2,7 @@
   "name": "Alkitab Terjemahan Baru",
   "short_name": "Alkitab TB",
   "description": "Alkitab Terjemahan Baru 1974 \u2014 baca offline di mana saja",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#1a1209",
   "theme_color": "#1a1209",
@@ -21,5 +21,6 @@
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "scope": "/"
 }

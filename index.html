@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alkitab – Terjemahan Baru</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    onerror="document.documentElement.classList.add('no-fa')" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1a1209" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Alkitab TB" />
-  <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"><\/script>
+  <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
@@ -31,6 +32,11 @@
       --font-body:   'Crimson Pro', Georgia, serif;
       --font-display:'Playfair Display', Georgia, serif;
     }
+    /* Hide fallback text when FA loads fine */
+    .icon-fallback { display: none; }
+    .no-fa .icon-fallback { display: inline; }
+    /* Make sure FA icons in buttons don't break layout */
+    .fa-solid, .fa-regular { font-style: normal; }
 
     html { scroll-behavior: smooth; }
     body {
@@ -254,13 +260,14 @@
     /* ── Search Panel ── */
     #search-panel {
       display: none;
+      visibility: hidden;
       position: fixed;
       top: 0; left: var(--sidebar-w); right: 0; bottom: 0;
       background: var(--parchment);
       z-index: 80;
       flex-direction: column;
     }
-    #search-panel.open { display: flex; }
+    #search-panel.open { display: flex; visibility: visible; }
     #search-panel-header {
       padding: 16px 24px;
       border-bottom: 1px solid rgba(184,137,42,.2);
@@ -355,13 +362,14 @@
     /* ── Bookmark Panel ── */
     #bookmark-panel {
       display: none;
+      visibility: hidden;
       position: fixed;
       top: 0; left: var(--sidebar-w); right: 0; bottom: 0;
       background: var(--parchment);
       z-index: 80;
       flex-direction: column;
     }
-    #bookmark-panel.open { display: flex; }
+    #bookmark-panel.open { display: flex; visibility: visible; }
     #bookmark-panel-header {
       padding: 16px 24px;
       border-bottom: 1px solid rgba(184,137,42,.2);
@@ -963,7 +971,6 @@ let deferredInstallPrompt = null;
 const DB_NAME = 'alkitab-tb';
 const DB_VER  = 1;
 let db = null;
-
 function openDB() {
   return new Promise((res, rej) => {
     const req = indexedDB.open(DB_NAME, DB_VER);
@@ -1518,7 +1525,7 @@ if ('serviceWorker' in navigator) {
   <div id="search-panel-header">
     <div style="display:flex;align-items:center;gap:10px;">
       <h2><i class="fa-solid fa-magnifying-glass" style="color:var(--gold);margin-right:8px;font-size:.9em"></i>Cari Ayat</h2>
-      <button id="ft-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+      <button id="ft-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i><span class="icon-fallback">✕</span></button>
     </div>
     <div id="ft-search-wrap">
       <input type="search" id="ft-input" placeholder="Ketik kata atau frasa…" autocomplete="off" />
@@ -1532,7 +1539,7 @@ if ('serviceWorker' in navigator) {
 <div id="bookmark-panel">
   <div id="bookmark-panel-header">
     <h2><i class="fa-solid fa-bookmark" style="color:var(--gold);margin-right:8px;font-size:.9em"></i>Bookmark</h2>
-    <button id="bm-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    <button id="bm-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i><span class="icon-fallback">✕</span></button>
   </div>
   <div id="bookmark-list"></div>
 </div>
