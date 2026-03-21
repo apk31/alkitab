@@ -783,30 +783,29 @@
       #topbar-row2 {
         display: none;
         align-items: center;
-        padding: 8px 14px 10px;
-        gap: 8px;
+        padding: 6px 12px 8px;
+        gap: 6px;
         border-top: 1px solid rgba(184,137,42,.15);
       }
       #topbar-row2.visible { display: flex; }
 
       #chapter-select {
         flex: 1;
-        font-size: 1rem;
-        padding: 9px 10px;
+        min-width: 0;
+        font-size: .95rem;
+        padding: 8px 8px;
         border-radius: 8px;
+        max-width: 160px;
       }
       .nav-btn {
-        width: 44px; height: 44px;
-        font-size: 1.3rem;
+        width: 40px; height: 40px;
+        font-size: 1.1rem;
         border-radius: 8px;
         flex-shrink: 0;
       }
-      #font-controls { margin-left: auto; gap: 8px; }
-      .font-btn {
-        width: 44px; height: 44px;
-        font-size: 1rem;
-        border-radius: 8px;
-      }
+      /* Sembunyikan tombol search & bookmark di mobile — sudah ada di bottom nav */
+      #font-controls .desktop-search-btn,
+      #font-controls .desktop-bm-btn { display: none !important; }
 
       #reader { padding: 24px 16px 100px; }
       #book-title { font-size: 1.8rem; }
@@ -1556,12 +1555,12 @@ document.getElementById('bm-close-btn').addEventListener('click', closeBookmarkP
 (function addDesktopSearch() {
   const fontCtrl = document.getElementById('font-controls');
   const btn = document.createElement('button');
-  btn.className = 'font-btn';
+  btn.className = 'font-btn desktop-search-btn';
   btn.title = 'Cari Ayat (Ctrl+F)';
   btn.innerHTML = '<svg class="ic" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>';
   btn.addEventListener('click', openSearchPanel);
   const bmBtn = document.createElement('button');
-  bmBtn.className = 'font-btn';
+  bmBtn.className = 'font-btn desktop-bm-btn';
   bmBtn.title = 'Bookmark';
   bmBtn.innerHTML = '<svg class="ic" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>';
   bmBtn.addEventListener('click', openBookmarkPanel);
