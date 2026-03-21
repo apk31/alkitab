@@ -47,6 +47,7 @@
       color: var(--ink);
       min-height: 100vh;
       overflow-x: hidden;
+      overscroll-behavior-y: none; /* cegah pull-to-refresh browser di mobile */
     }
 
     /* ── Sidebar ── */
@@ -722,6 +723,9 @@
       z-index: 90;
     }
     #overlay.visible { display: block; }
+
+    /* Cegah pull-to-refresh saat sidebar/panel terbuka */
+    body.no-overscroll { overscroll-behavior-y: none; }
 
     /* ── Mobile ── */
     @media (max-width: 768px) {
@@ -1483,9 +1487,10 @@ function runSearch() {
 }
 
 function openSearchPanel() {
-  closeBookmarkPanel();   // tutup bookmark dulu
+  closeBookmarkPanel();
   closeSidebar();
   searchPanel.classList.add('open');
+  document.body.classList.add('no-overscroll');
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('bnav-search').classList.add('active');
   buildSearchIndex();
@@ -1494,6 +1499,7 @@ function openSearchPanel() {
 function closeSearchPanel() {
   searchPanel.classList.remove('open');
   document.getElementById('bnav-search').classList.remove('active');
+  document.body.classList.remove('no-overscroll');
 }
 
 document.getElementById('ft-close-btn').addEventListener('click', closeSearchPanel);
@@ -1515,15 +1521,17 @@ document.addEventListener('keydown', e => {
 const bookmarkPanel = document.getElementById('bookmark-panel');
 
 async function openBookmarkPanel() {
-  closeSearchPanel();     // tutup search dulu
+  closeSearchPanel();
   closeSidebar();
   bookmarkPanel.classList.add('open');
+  document.body.classList.add('no-overscroll');
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('bnav-bookmark').classList.add('active');
   await renderBookmarkList();
 }
 function closeBookmarkPanel() {
   bookmarkPanel.classList.remove('open');
+  document.body.classList.remove('no-overscroll');
   if (document.getElementById('bnav-bookmark'))
     document.getElementById('bnav-bookmark').classList.remove('active');
 }
@@ -1607,7 +1615,8 @@ if (bnavBooks) {
     const isOpen = sidebar.classList.toggle('open');
     overlay.classList.toggle('visible', isOpen);
     bnavBooks.classList.toggle('active', isOpen);
-    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); }
+    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); document.body.classList.add('no-overscroll'); }
+    else { document.body.classList.remove('no-overscroll'); }
   });
 
   // ── Drag sidebar ke bawah untuk tutup ──────────────────────
@@ -1639,6 +1648,7 @@ function closeSidebar() {
   sidebar.classList.remove('open');
   overlay.classList.remove('visible');
   if (bnavBooks) bnavBooks.classList.remove('active');
+  document.body.classList.remove('no-overscroll');
 }
 
 // ── Keyboard ─────────────────────────────────────────────────
@@ -1721,7 +1731,8 @@ document.getElementById('chapter-label').addEventListener('click', () => {
     const isOpen = sidebar.classList.toggle('open');
     overlay.classList.toggle('visible', isOpen);
     if (bnavBooks) bnavBooks.classList.toggle('active', isOpen);
-    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); }
+    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); document.body.classList.add('no-overscroll'); }
+    else { document.body.classList.remove('no-overscroll'); }
   }
 });
 
