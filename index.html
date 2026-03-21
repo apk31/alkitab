@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alkitab – Terjemahan Baru</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
@@ -136,28 +137,44 @@
     }
     .book-item.active .book-abbr { color: var(--gold); }
 
-    /* ── Hamburger ── */
-    #hamburger {
+    /* ── Bottom Nav (mobile) ── */
+    #bottom-nav {
       display: none;
       position: fixed;
-      top: 14px; left: 14px;
-      z-index: 200;
-      width: 40px; height: 40px;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
       background: var(--ink);
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      z-index: 200;
+      align-items: stretch;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .bnav-btn {
+      flex: 1;
+      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      background: none;
+      border: none;
+      color: rgba(250,246,239,.55);
+      font-family: var(--font-body);
+      font-size: .65rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
       gap: 5px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.3);
+      transition: color .2s, background .2s;
+      padding: 0 4px;
     }
-    #hamburger span {
-      display: block;
-      width: 20px; height: 2px;
-      background: var(--gold-light);
-      border-radius: 2px;
+    .bnav-btn:active { background: rgba(255,255,255,.06); }
+    .bnav-btn.active { color: var(--gold-light); }
+    .bnav-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    /* Divider between nav items */
+    .bnav-btn + .bnav-btn {
+      border-left: 1px solid rgba(255,255,255,.07);
     }
 
     /* ── Main ── */
@@ -189,6 +206,8 @@
       min-width: 170px;
       flex-shrink: 0;
     }
+    .label-mobile { display: none; }
+    .label-desktop { display: inline; }
     #chapter-select {
       padding: 5px 10px;
       border: 1px solid rgba(184,137,42,.35);
@@ -229,7 +248,7 @@
     /* ── Reader ── */
     #reader {
       flex: 1;
-      max-width: 1500px;
+      max-width: 1300px;
       margin: 0 auto;
       padding: 40px 32px 100px;
       width: 100%;
@@ -296,6 +315,7 @@
     .section-heading {
       display: block;
       font-family: var(--font-display);
+      /* font-size diwarisi dari #verses-container agar ikut A+/A- */
       font-size: 1.05em;
       font-weight: 700;
       color: var(--ink);
@@ -394,15 +414,100 @@
 
     /* ── Mobile ── */
     @media (max-width: 768px) {
-      #sidebar { transform: translateX(-100%); }
-      #sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,.35); }
+      /* Sidebar: full screen overlay dari bawah */
+      #sidebar {
+        top: auto;
+        bottom: 60px;
+        left: 0; right: 0;
+        width: 100%;
+        height: 70vh;
+        transform: translateY(100%);
+        border-radius: 20px 20px 0 0;
+        box-shadow: none;
+      }
+      #sidebar.open {
+        transform: translateY(0);
+        box-shadow: 0 -8px 40px rgba(0,0,0,.35);
+      }
+      #sidebar-header {
+        padding: 20px 24px 16px;
+        border-radius: 20px 20px 0 0;
+      }
+      /* Drag handle indicator */
+      #sidebar-header::before {
+        content: '';
+        display: block;
+        width: 40px; height: 4px;
+        background: rgba(255,255,255,.2);
+        border-radius: 2px;
+        margin: 0 auto 16px;
+      }
+
       #main { margin-left: 0; }
-      #hamburger { display: flex; }
-      #topbar { padding: 12px 12px 12px 60px; flex-wrap: wrap; gap: 8px; }
-      #chapter-label { min-width: unset; font-size: .9rem; }
-      #reader { padding: 24px 14px 80px; }
+      #bottom-nav { display: flex; }
+
+      /* Topbar mobile: bersih, 2 baris */
+      #topbar {
+        padding: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+      }
+
+      #topbar-row1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 16px;
+        min-height: 56px;
+      }
+
+      #chapter-label {
+        min-width: unset;
+        font-size: 1.15rem;
+        font-weight: 700;
+        flex: 1;
+        text-align: center;
+      }
+      .label-mobile { display: inline; }
+      .label-desktop { display: none; }
+
+      #topbar-row2 {
+        display: none;
+        align-items: center;
+        padding: 8px 14px 10px;
+        gap: 8px;
+        border-top: 1px solid rgba(184,137,42,.15);
+      }
+      #topbar-row2.visible { display: flex; }
+
+      #chapter-select {
+        flex: 1;
+        font-size: 1rem;
+        padding: 9px 10px;
+        border-radius: 8px;
+      }
+      .nav-btn {
+        width: 44px; height: 44px;
+        font-size: 1.3rem;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      #font-controls { margin-left: auto; gap: 8px; }
+      .font-btn {
+        width: 44px; height: 44px;
+        font-size: 1rem;
+        border-radius: 8px;
+      }
+
+      #reader { padding: 24px 16px 100px; }
       #book-title { font-size: 1.8rem; }
-      #font-controls { margin-left: 0; }
+    }
+
+    /* Desktop: sembunyikan row wrapper, bottom-nav */
+    @media (min-width: 769px) {
+      #topbar-row1, #topbar-row2 { display: contents; }
+      #bottom-nav { display: none !important; }
     }
   </style>
 </head>
@@ -424,17 +529,36 @@
 </aside>
 
 <div id="overlay"></div>
-<button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+<nav id="bottom-nav" role="navigation" aria-label="Navigasi bawah">
+  <button class="bnav-btn active" id="bnav-books" aria-label="Daftar Kitab">
+    <span class="bnav-icon"><i class="fa-solid fa-book-open"></i></span>
+    <span>Kitab</span>
+  </button>
+  <button class="bnav-btn" id="bnav-prev" aria-label="Pasal sebelumnya">
+    <span class="bnav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+    <span>Sebelumnya</span>
+  </button>
+  <button class="bnav-btn" id="bnav-next" aria-label="Pasal berikutnya">
+    <span class="bnav-icon"><i class="fa-solid fa-arrow-right"></i></span>
+    <span>Berikutnya</span>
+  </button>
+</nav>
 
 <div id="main">
   <header id="topbar">
-    <span id="chapter-label">Pilih kitab di kiri</span>
-    <select id="chapter-select" style="display:none"></select>
-    <button class="nav-btn" id="prev-btn" disabled>&#8592;</button>
-    <button class="nav-btn" id="next-btn" disabled>&#8594;</button>
-    <div id="font-controls">
-      <button class="font-btn" id="font-dec" title="Perkecil">A−</button>
-      <button class="font-btn" id="font-inc" title="Perbesar">A+</button>
+    <!-- Baris 1: nama kitab -->
+    <div id="topbar-row1">
+      <span id="chapter-label"><span class="label-desktop">Pilih kitab di kiri</span><span class="label-mobile">Pilih kitab di bawah</span></span>
+    </div>
+    <!-- Baris 2: navigasi pasal + font -->
+    <div id="topbar-row2">
+      <select id="chapter-select" style="display:none"></select>
+      <button class="nav-btn" id="prev-btn" disabled>&#8592;</button>
+      <button class="nav-btn" id="next-btn" disabled>&#8594;</button>
+      <div id="font-controls">
+        <button class="font-btn" id="font-dec" title="Perkecil">A−</button>
+        <button class="font-btn" id="font-inc" title="Perbesar">A+</button>
+      </div>
     </div>
   </header>
 
@@ -562,7 +686,6 @@ const versesEl       = document.getElementById('verses-container');
 const sidebar        = document.getElementById('sidebar');
 const overlay        = document.getElementById('overlay');
 const hamburger      = document.getElementById('hamburger');
-// const sectionHeadingEl = document.getElementById('section-heading');
 
 // ── Render book list ─────────────────────────────────────────
 function renderBooks() {
@@ -599,6 +722,8 @@ function selectBook(book, ch = 1) {
   }
   chapterSelect.style.display = 'inline-block';
   chapterLabel.textContent = book.name;
+  // Tampilkan baris 2 di mobile saat kitab sudah dipilih
+  document.getElementById('topbar-row2').classList.add('visible');
   loadChapter();
 }
 
@@ -630,7 +755,6 @@ function renderVerses(verses) {
   bookTitleEl.textContent = curBook.name;
   chapterSubEl.textContent = `Pasal ${curChapter}`;
   versesEl.innerHTML = '';
-  // sectionHeadingEl.style.fontSize = fontSize + 'rem';
   versesEl.style.fontSize = fontSize + 'rem';
 
   if (!verses.length) {
@@ -665,7 +789,6 @@ function renderVerses(verses) {
     const textEl = document.createElement('span');
     textEl.className = 'verse-text';
     textEl.textContent = v.t + ' ';
-    
 
     span.appendChild(numEl);
     span.appendChild(textEl);
@@ -729,25 +852,32 @@ searchInput.addEventListener('input', renderBooks);
 document.getElementById('font-inc').addEventListener('click', () => {
   fontSize = Math.min(fontSize + .1, 1.9);
   versesEl.style.fontSize = fontSize + 'rem';
-  // sectionHeadingEl.style.fontSize = fontSize + 'rem';
-
 });
 document.getElementById('font-dec').addEventListener('click', () => {
   fontSize = Math.max(fontSize - .1, .85);
   versesEl.style.fontSize = fontSize + 'rem';
-  // sectionHeadingEl.style.fontSize = fontSize + 'rem';
-
 });
 
-// ── Mobile sidebar ────────────────────────────────────────────
-hamburger.addEventListener('click', () => {
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('visible');
-});
+// ── Mobile bottom nav ─────────────────────────────────────────
+const bnavBooks = document.getElementById('bnav-books');
+const bnavPrev  = document.getElementById('bnav-prev');
+const bnavNext  = document.getElementById('bnav-next');
+
+if (bnavBooks) {
+  bnavBooks.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible');
+    bnavBooks.classList.toggle('active', sidebar.classList.contains('open'));
+  });
+  bnavPrev.addEventListener('click', () => prevBtn.click());
+  bnavNext.addEventListener('click', () => nextBtn.click());
+}
+
 overlay.addEventListener('click', closeSidebar);
 function closeSidebar() {
   sidebar.classList.remove('open');
   overlay.classList.remove('visible');
+  if (bnavBooks) bnavBooks.classList.remove('active');
 }
 
 // ── Keyboard ─────────────────────────────────────────────────
