@@ -130,22 +130,25 @@
     .book-item {
       display: flex;
       align-items: center;
-      padding: 9px 24px;
+      padding: 14px 24px;
       cursor: pointer;
-      font-size: .92rem;
+      font-size: 1.05rem;
       color: rgba(250,246,239,.72);
       transition: background .15s, color .15s;
       border-left: 3px solid transparent;
+      min-height: 52px;        /* touch target minimum Apple/Google guideline */
+      border-bottom: 1px solid rgba(255,255,255,.04);
     }
     .book-item:hover { background: rgba(255,255,255,.06); color: var(--parchment); }
+    .book-item:active { background: rgba(212,168,67,.12); }
     .book-item.active {
       background: rgba(212,168,67,.1);
       color: var(--gold-light);
       border-left-color: var(--gold);
     }
     .book-abbr {
-      width: 42px;
-      font-size: .74rem;
+      width: 46px;
+      font-size: .8rem;
       color: rgba(250,246,239,.3);
       flex-shrink: 0;
     }
@@ -556,7 +559,7 @@
     /* ── Reader ── */
     #reader {
       flex: 1;
-      max-width: 1400px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 40px 32px 100px;
       width: 100%;
@@ -779,6 +782,24 @@
       }
       .label-mobile { display: inline; }
       .label-desktop { display: none; }
+      /* Nama kitab clickable di mobile */
+      #chapter-label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+      }
+      #chapter-label::after {
+        content: '';
+        display: inline-block;
+        width: 8px; height: 8px;
+        border-right: 2px solid var(--gold);
+        border-bottom: 2px solid var(--gold);
+        transform: rotate(45deg) translateY(-2px);
+        opacity: .6;
+        flex-shrink: 0;
+      }
 
       #topbar-row2 {
         display: none;
@@ -883,9 +904,12 @@
 
 <div id="main">
   <header id="topbar">
-    <!-- Baris 1: nama kitab -->
+    <!-- Baris 1: nama kitab (clickable di mobile untuk buka sidebar) -->
     <div id="topbar-row1">
-      <span id="chapter-label"><span class="label-desktop">Pilih kitab di kiri</span><span class="label-mobile">Pilih kitab di bawah</span></span>
+      <span id="chapter-label" role="button" aria-label="Buka daftar kitab">
+        <span class="label-desktop">Pilih kitab di kiri</span>
+        <span class="label-mobile">Pilih kitab di bawah</span>
+      </span>
     </div>
     <!-- Baris 2: navigasi pasal + font -->
     <div id="topbar-row2">
@@ -931,9 +955,9 @@
 <!-- ── Search Panel ── -->
 <div id="search-panel">
   <div id="search-panel-header">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <h2><svg class="ic" style="color:var(--gold);margin-right:8px;width:.9em;height:.9em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>Cari Ayat</h2>
-      <button id="ft-close-btn" title="Tutup"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+      <h2 style="display:flex;align-items:center;gap:8px;margin:0;"><svg class="ic" style="color:var(--gold);width:1em;height:1em;flex-shrink:0" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>Cari Ayat</h2>
+      <button id="ft-close-btn" title="Tutup" style="flex-shrink:0"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
     </div>
     <div id="ft-search-wrap">
       <input type="search" id="ft-input" placeholder="Ketik kata atau frasa…" autocomplete="off" />
@@ -945,9 +969,9 @@
 
 <!-- ── Bookmark Panel ── -->
 <div id="bookmark-panel">
-  <div id="bookmark-panel-header">
-    <h2><svg class="ic" style="color:var(--gold);margin-right:8px;width:.9em;height:.9em" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>Bookmark</h2>
-    <button id="bm-close-btn" title="Tutup"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
+  <div id="bookmark-panel-header" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(184,137,42,.2);">
+    <h2 style="display:flex;align-items:center;gap:8px;margin:0;font-family:var(--font-display);font-size:1.2rem;color:var(--ink);"><svg class="ic" style="color:var(--gold);width:1em;height:1em;flex-shrink:0" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>Bookmark</h2>
+    <button id="bm-close-btn" title="Tutup" style="width:36px;height:36px;background:none;border:1px solid rgba(184,137,42,.3);border-radius:8px;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
   </div>
   <div id="bookmark-list"></div>
 </div>
@@ -1459,8 +1483,9 @@ function runSearch() {
 }
 
 function openSearchPanel() {
-  searchPanel.classList.add('open');
+  closeBookmarkPanel();   // tutup bookmark dulu
   closeSidebar();
+  searchPanel.classList.add('open');
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('bnav-search').classList.add('active');
   buildSearchIndex();
@@ -1490,15 +1515,17 @@ document.addEventListener('keydown', e => {
 const bookmarkPanel = document.getElementById('bookmark-panel');
 
 async function openBookmarkPanel() {
-  bookmarkPanel.classList.add('open');
+  closeSearchPanel();     // tutup search dulu
   closeSidebar();
+  bookmarkPanel.classList.add('open');
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('bnav-bookmark').classList.add('active');
   await renderBookmarkList();
 }
 function closeBookmarkPanel() {
   bookmarkPanel.classList.remove('open');
-  document.getElementById('bnav-bookmark').classList.remove('active');
+  if (document.getElementById('bnav-bookmark'))
+    document.getElementById('bnav-bookmark').classList.remove('active');
 }
 
 async function renderBookmarkList() {
@@ -1507,7 +1534,7 @@ async function renderBookmarkList() {
   const all = await dbGetAll('bookmarks');
   all.sort((a, b) => b.date - a.date);
   if (!all.length) {
-    listEl.innerHTML = '<div class="bm-empty"><svg class="ic" style="font-size:2rem;width:2rem;height:2rem;display:block;margin-bottom:12px;color:var(--gold-pale)" viewBox="0 0 384 512"><path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/></svg>Belum ada bookmark.<br>Ketuk nomor ayat lalu ikon bookmark untuk menyimpan.</div>';
+    listEl.innerHTML = '<div class="bm-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;gap:16px;"><svg style="width:3rem;height:3rem;color:var(--gold-pale);opacity:.7" viewBox="0 0 384 512"><path fill="currentColor" d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/></svg><p style="text-align:center;color:var(--ink-light);font-style:italic;line-height:1.6;">Belum ada bookmark.<br>Ketuk nomor ayat lalu ikon bookmark untuk menyimpan.</p></div>';
     return;
   }
   listEl.innerHTML = '';
@@ -1580,8 +1607,27 @@ if (bnavBooks) {
     const isOpen = sidebar.classList.toggle('open');
     overlay.classList.toggle('visible', isOpen);
     bnavBooks.classList.toggle('active', isOpen);
-    if (isOpen) { searchPanel.classList.remove('open'); bookmarkPanel.classList.remove('open'); }
+    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); }
   });
+
+  // ── Drag sidebar ke bawah untuk tutup ──────────────────────
+  let dragStartY = 0, dragStarted = false;
+  sidebar.addEventListener('touchstart', e => {
+    dragStartY = e.touches[0].clientY;
+    dragStarted = true;
+  }, { passive: true });
+  sidebar.addEventListener('touchmove', e => {
+    if (!dragStarted) return;
+    const dy = e.touches[0].clientY - dragStartY;
+    if (dy > 0) sidebar.style.transform = `translateY(${dy}px)`;
+  }, { passive: true });
+  sidebar.addEventListener('touchend', e => {
+    if (!dragStarted) return;
+    dragStarted = false;
+    const dy = e.changedTouches[0].clientY - dragStartY;
+    sidebar.style.transform = '';
+    if (dy > 80) closeSidebar();   // tarik > 80px → tutup
+  }, { passive: true });
   bnavPrev.addEventListener('click', () => prevBtn.click());
   bnavNext.addEventListener('click', () => nextBtn.click());
   bnavSearch.addEventListener('click', openSearchPanel);
@@ -1668,6 +1714,16 @@ if ('serviceWorker' in navigator) {
 
   }).catch(err => console.warn('[SW] Failed:', err));
 }
+
+// ── Chapter label clickable di mobile (buka sidebar) ─────────
+document.getElementById('chapter-label').addEventListener('click', () => {
+  if (window.innerWidth <= 768) {
+    const isOpen = sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible', isOpen);
+    if (bnavBooks) bnavBooks.classList.toggle('active', isOpen);
+    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); }
+  }
+});
 
 // ── Init ─────────────────────────────────────────────────────
 (async function init() {
