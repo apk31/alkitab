@@ -229,7 +229,7 @@
     /* ── Reader ── */
     #reader {
       flex: 1;
-      max-width: 980px;
+      max-width: 1500px;
       margin: 0 auto;
       padding: 40px 32px 100px;
       width: 100%;
@@ -296,7 +296,7 @@
     .section-heading {
       display: block;
       font-family: var(--font-display);
-      font-size: 1.05rem;
+      /* font-size: 1.05rem; */
       font-weight: 700;
       color: var(--ink);
       text-align: center;
@@ -562,6 +562,7 @@ const versesEl       = document.getElementById('verses-container');
 const sidebar        = document.getElementById('sidebar');
 const overlay        = document.getElementById('overlay');
 const hamburger      = document.getElementById('hamburger');
+// const sectionHeadingEl = document.getElementById('section-heading');
 
 // ── Render book list ─────────────────────────────────────────
 function renderBooks() {
@@ -629,6 +630,7 @@ function renderVerses(verses) {
   bookTitleEl.textContent = curBook.name;
   chapterSubEl.textContent = `Pasal ${curChapter}`;
   versesEl.innerHTML = '';
+  // sectionHeadingEl.style.fontSize = fontSize + 'rem';
   versesEl.style.fontSize = fontSize + 'rem';
 
   if (!verses.length) {
@@ -663,6 +665,7 @@ function renderVerses(verses) {
     const textEl = document.createElement('span');
     textEl.className = 'verse-text';
     textEl.textContent = v.t + ' ';
+    
 
     span.appendChild(numEl);
     span.appendChild(textEl);
@@ -726,10 +729,14 @@ searchInput.addEventListener('input', renderBooks);
 document.getElementById('font-inc').addEventListener('click', () => {
   fontSize = Math.min(fontSize + .1, 1.9);
   versesEl.style.fontSize = fontSize + 'rem';
+  // sectionHeadingEl.style.fontSize = fontSize + 'rem';
+
 });
 document.getElementById('font-dec').addEventListener('click', () => {
   fontSize = Math.max(fontSize - .1, .85);
   versesEl.style.fontSize = fontSize + 'rem';
+  // sectionHeadingEl.style.fontSize = fontSize + 'rem';
+
 });
 
 // ── Mobile sidebar ────────────────────────────────────────────
