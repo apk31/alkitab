@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <defs>
+    <radialGradient id="bg192" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#2d1f0e"/>
+      <stop offset="100%" stop-color="#1a1209"/>
+    </radialGradient>
+    <radialGradient id="glow192" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4a843" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#d4a843" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cross192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c060"/>
+      <stop offset="50%" stop-color="#d4a843"/>
+      <stop offset="100%" stop-color="#b8892a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="192" height="192" rx="38" fill="url(#bg192)"/>
+
+  <!-- Subtle border -->
+  <rect width="192" height="192" rx="38" fill="none" stroke="#b8892a" stroke-width="1.5" stroke-opacity="0.3"/>
+
+  <!-- Glow behind cross -->
+  <ellipse cx="96" cy="95" rx="55" ry="65" fill="url(#glow192)"/>
+
+  <!-- Cross shadow -->
+  <rect x="88.5" y="38" width="17" height="102" rx="3" fill="#000" fill-opacity="0.3" transform="translate(2,2)"/>
+  <rect x="56" y="68" width="82" height="17" rx="3" fill="#000" fill-opacity="0.3" transform="translate(2,2)"/>
+
+  <!-- Cross body -->
+  <rect x="87" y="36" width="18" height="104" rx="3.5" fill="url(#cross192)"/>
+  <rect x="54" y="66" width="84" height="18" rx="3.5" fill="url(#cross192)"/>
+
+  <!-- Cross highlight -->
+  <rect x="87" y="36" width="6" height="104" rx="3.5" fill="#fff" fill-opacity="0.15"/>
+  <rect x="54" y="66" width="84" height="6" rx="3.5" fill="#fff" fill-opacity="0.15"/>
+
+  <!-- Corner ornaments -->
+  <circle cx="38" cy="38" r="3" fill="#b8892a" fill-opacity="0.4"/>
+  <circle cx="154" cy="38" r="3" fill="#b8892a" fill-opacity="0.4"/>
+  <circle cx="38" cy="154" r="3" fill="#b8892a" fill-opacity="0.4"/>
+  <circle cx="154" cy="154" r="3" fill="#b8892a" fill-opacity="0.4"/>
+
+  <!-- Decorative lines top -->
+  <line x1="32" y1="28" x2="68" y2="28" stroke="#b8892a" stroke-width="0.8" stroke-opacity="0.35"/>
+  <line x1="124" y1="28" x2="160" y2="28" stroke="#b8892a" stroke-width="0.8" stroke-opacity="0.35"/>
+  <!-- Decorative lines bottom -->
+  <line x1="32" y1="164" x2="68" y2="164" stroke="#b8892a" stroke-width="0.8" stroke-opacity="0.35"/>
+  <line x1="124" y1="164" x2="160" y2="164" stroke="#b8892a" stroke-width="0.8" stroke-opacity="0.35"/>
+
+  <!-- Small diamond ornaments -->
+  <polygon points="96,170 99,174 96,178 93,174" fill="#b8892a" fill-opacity="0.5"/>
+  <polygon points="96,14 99,18 96,22 93,18" fill="#b8892a" fill-opacity="0.5"/>
+  
+</svg>

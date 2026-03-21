@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alkitab – Terjemahan Baru</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a1209" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Alkitab TB" />
+  <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"><\/script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
@@ -245,10 +251,267 @@
     }
     .font-btn:hover { background: var(--gold-pale); }
 
+    /* ── Search Panel ── */
+    #search-panel {
+      display: none;
+      position: fixed;
+      top: 0; left: var(--sidebar-w); right: 0; bottom: 0;
+      background: var(--parchment);
+      z-index: 80;
+      flex-direction: column;
+    }
+    #search-panel.open { display: flex; }
+    #search-panel-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(184,137,42,.2);
+      background: rgba(250,246,239,.97);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: sticky;
+      top: 0;
+    }
+    #search-panel-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--ink);
+    }
+    #ft-search-wrap {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    #ft-input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 1px solid rgba(184,137,42,.35);
+      border-radius: 8px;
+      background: var(--parchment);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--ink);
+      outline: none;
+      transition: border .2s;
+    }
+    #ft-input:focus { border-color: var(--gold); }
+    #ft-close-btn {
+      width: 36px; height: 36px;
+      background: none;
+      border: 1px solid rgba(184,137,42,.3);
+      border-radius: 8px;
+      color: var(--gold);
+      cursor: pointer;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    #ft-status {
+      font-size: .82rem;
+      color: var(--ink-light);
+      font-style: italic;
+      min-height: 18px;
+    }
+    #ft-results {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 24px 40px;
+    }
+    #ft-results::-webkit-scrollbar { width: 4px; }
+    #ft-results::-webkit-scrollbar-thumb { background: rgba(184,137,42,.2); border-radius: 2px; }
+    .ft-result-item {
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(184,137,42,.1);
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .ft-result-item:hover { background: rgba(184,137,42,.05); border-radius: 8px; padding-left: 8px; padding-right: 8px; }
+    .ft-ref {
+      font-family: var(--font-display);
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: .04em;
+      margin-bottom: 4px;
+    }
+    .ft-text {
+      font-size: 1rem;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+    .ft-text mark {
+      background: var(--gold-pale);
+      color: var(--ink);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+    .ft-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--ink-light);
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    /* ── Bookmark Panel ── */
+    #bookmark-panel {
+      display: none;
+      position: fixed;
+      top: 0; left: var(--sidebar-w); right: 0; bottom: 0;
+      background: var(--parchment);
+      z-index: 80;
+      flex-direction: column;
+    }
+    #bookmark-panel.open { display: flex; }
+    #bookmark-panel-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(184,137,42,.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #bookmark-panel-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--ink);
+      flex: 1;
+    }
+    #bm-close-btn {
+      width: 36px; height: 36px;
+      background: none;
+      border: 1px solid rgba(184,137,42,.3);
+      border-radius: 8px;
+      color: var(--gold);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    #bookmark-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 24px 40px;
+    }
+    .bm-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(184,137,42,.1);
+      cursor: pointer;
+    }
+    .bm-item:hover .bm-info { color: var(--gold); }
+    .bm-icon { color: var(--gold); font-size: 1.1rem; flex-shrink: 0; }
+    .bm-info { flex: 1; }
+    .bm-ref {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .95rem;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .bm-preview {
+      font-size: .88rem;
+      color: var(--ink-light);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .bm-delete {
+      width: 32px; height: 32px;
+      background: none;
+      border: none;
+      color: rgba(139,32,32,.4);
+      cursor: pointer;
+      font-size: 1rem;
+      border-radius: 6px;
+      transition: color .2s, background .2s;
+      flex-shrink: 0;
+    }
+    .bm-delete:hover { color: var(--red-accent); background: rgba(139,32,32,.08); }
+    .bm-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--ink-light);
+      font-style: italic;
+    }
+
+    /* ── Bookmark button on verse ── */
+    .verse-bm-btn {
+      display: inline-block;
+      opacity: 0;
+      margin-left: 4px;
+      cursor: pointer;
+      color: rgba(184,137,42,.4);
+      font-size: .85rem;
+      vertical-align: middle;
+      transition: opacity .2s, color .2s;
+      background: none;
+      border: none;
+      padding: 0 2px;
+    }
+    .verse-wrap:hover .verse-bm-btn { opacity: 1; }
+    .verse-bm-btn.saved { opacity: 1; color: var(--gold); }
+
+    /* ── Toast notification ── */
+    #toast {
+      position: fixed;
+      bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--ink);
+      color: var(--parchment);
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: .9rem;
+      font-family: var(--font-body);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s, transform .3s;
+      white-space: nowrap;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── PWA Install Banner ── */
+    #install-banner {
+      display: none;
+      position: fixed;
+      bottom: 70px; left: 12px; right: 12px;
+      background: var(--ink);
+      color: var(--parchment);
+      border-radius: 14px;
+      padding: 14px 18px;
+      z-index: 300;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.4);
+    }
+    #install-banner.visible { display: flex; }
+    #install-banner p { flex: 1; font-size: .9rem; line-height: 1.4; }
+    #install-banner p strong { color: var(--gold-light); display: block; margin-bottom: 2px; }
+    #install-btn {
+      padding: 8px 18px;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: 8px;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    #install-dismiss {
+      background: none;
+      border: none;
+      color: rgba(250,246,239,.4);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+
     /* ── Reader ── */
     #reader {
       flex: 1;
-      max-width: 1300px;
+      max-width: 980px;
       margin: 0 auto;
       padding: 40px 32px 100px;
       width: 100%;
@@ -502,12 +765,17 @@
 
       #reader { padding: 24px 16px 100px; }
       #book-title { font-size: 1.8rem; }
+      #search-panel, #bookmark-panel { left: 0; }
+      #search-panel-header, #bookmark-panel-header { padding: 14px 16px; }
+      #ft-results, #bookmark-list { padding: 8px 16px 100px; }
     }
 
     /* Desktop: sembunyikan row wrapper, bottom-nav */
     @media (min-width: 769px) {
       #topbar-row1, #topbar-row2 { display: contents; }
       #bottom-nav { display: none !important; }
+      #install-banner { bottom: 24px; }
+      #toast { bottom: 32px; }
     }
   </style>
 </head>
@@ -542,7 +810,25 @@
     <span class="bnav-icon"><i class="fa-solid fa-arrow-right"></i></span>
     <span>Berikutnya</span>
   </button>
+  <button class="bnav-btn" id="bnav-search" aria-label="Cari Ayat">
+    <span class="bnav-icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+    <span>Cari</span>
+  </button>
+  <button class="bnav-btn" id="bnav-bookmark" aria-label="Bookmark">
+    <span class="bnav-icon"><i class="fa-solid fa-bookmark"></i></span>
+    <span>Simpan</span>
+  </button>
 </nav>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- PWA Install Banner -->
+<div id="install-banner">
+  <p><strong>Install Alkitab TB</strong>Buka seperti aplikasi, tersedia offline</p>
+  <button id="install-btn">Install</button>
+  <button id="install-dismiss">✕</button>
+</div>
 
 <div id="main">
   <header id="topbar">
@@ -668,6 +954,76 @@ let curBook = null;
 let curChapter = 1;
 let fontSize = 1.18;
 const cache = {}; // abbr -> {ch: [...verses]}
+let miniSearch = null;
+let searchIndexBuilt = false;
+let searchIndexBuilding = false;
+let deferredInstallPrompt = null;
+
+// ── IndexedDB (bookmarks) ─────────────────────────────────────
+const DB_NAME = 'alkitab-tb';
+const DB_VER  = 1;
+let db = null;
+
+function openDB() {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(DB_NAME, DB_VER);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('bookmarks')) {
+        const s = d.createObjectStore('bookmarks', { keyPath: 'id' });
+        s.createIndex('by_date', 'date', { unique: false });
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; res(db); };
+    req.onerror = () => rej(req.error);
+  });
+}
+
+async function dbGetAll(store) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+
+async function dbPut(store, item) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(item);
+    req.onsuccess = () => res();
+    req.onerror = () => rej(req.error);
+  });
+}
+
+async function dbDelete(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).delete(key);
+    req.onsuccess = () => res();
+    req.onerror = () => rej(req.error);
+  });
+}
+
+async function dbGet(store, key) {
+  return new Promise((res, rej) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).get(key);
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+const toastEl = document.getElementById('toast');
+let toastTimer = null;
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2500);
+}
 
 // ── DOM ──────────────────────────────────────────────────────
 const bookListEl     = document.getElementById('book-list');
@@ -685,7 +1041,6 @@ const chapterSubEl   = document.getElementById('chapter-subtitle');
 const versesEl       = document.getElementById('verses-container');
 const sidebar        = document.getElementById('sidebar');
 const overlay        = document.getElementById('overlay');
-const hamburger      = document.getElementById('hamburger');
 
 // ── Render book list ─────────────────────────────────────────
 function renderBooks() {
@@ -711,7 +1066,6 @@ function selectBook(book, ch = 1) {
   curBook = book;
   curChapter = ch;
   renderBooks();
-  // Build chapter dropdown
   chapterSelect.innerHTML = '';
   for (let i = 1; i <= book.chapter; i++) {
     const opt = document.createElement('option');
@@ -722,7 +1076,6 @@ function selectBook(book, ch = 1) {
   }
   chapterSelect.style.display = 'inline-block';
   chapterLabel.textContent = book.name;
-  // Tampilkan baris 2 di mobile saat kitab sudah dipilih
   document.getElementById('topbar-row2').classList.add('visible');
   loadChapter();
 }
@@ -733,7 +1086,6 @@ async function loadChapter() {
   prevBtn.disabled = curChapter <= 1;
   nextBtn.disabled = curChapter >= curBook.chapter;
   chapterSelect.value = curChapter;
-
   try {
     let bookData = cache[curBook.abbr];
     if (!bookData) {
@@ -751,22 +1103,26 @@ async function loadChapter() {
 }
 
 // ── Render verses ────────────────────────────────────────────
-function renderVerses(verses) {
+async function renderVerses(verses) {
   bookTitleEl.textContent = curBook.name;
   chapterSubEl.textContent = `Pasal ${curChapter}`;
   versesEl.innerHTML = '';
   versesEl.style.fontSize = fontSize + 'rem';
-
   if (!verses.length) {
     versesEl.textContent = '(Data pasal ini tidak tersedia)';
     showContent();
     return;
   }
-
+  // Load saved bookmarks for this chapter
+  let savedIds = new Set();
+  if (db) {
+    const all = await dbGetAll('bookmarks');
+    all.forEach(b => {
+      if (b.book === curBook.abbr && b.chapter === curChapter) savedIds.add(b.verse);
+    });
+  }
   let firstVerse = true;
-
   verses.forEach((v) => {
-    // v.v == 0  →  sub-bab / judul perikop
     if (v.v == 0) {
       const heading = document.createElement('span');
       heading.className = 'section-heading';
@@ -774,30 +1130,63 @@ function renderVerses(verses) {
       versesEl.appendChild(heading);
       return;
     }
-
-    const span = document.createElement('span');
+    const wrap = document.createElement('span');
+    wrap.className = 'verse-wrap';
+    wrap.dataset.verse = v.v;
 
     const numEl = document.createElement('sup');
     numEl.className = 'verse-number' + (firstVerse ? ' v1' : '');
     numEl.textContent = v.v;
     numEl.addEventListener('click', () => {
       document.querySelectorAll('.highlighted-verse').forEach(el => el.classList.remove('highlighted-verse'));
-      span.classList.add('highlighted-verse');
-      span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      wrap.classList.add('highlighted-verse');
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     const textEl = document.createElement('span');
     textEl.className = 'verse-text';
     textEl.textContent = v.t + ' ';
 
-    span.appendChild(numEl);
-    span.appendChild(textEl);
-    versesEl.appendChild(span);
+    // Bookmark button
+    const bmBtn = document.createElement('button');
+    bmBtn.className = 'verse-bm-btn' + (savedIds.has(v.v) ? ' saved' : '');
+    bmBtn.innerHTML = '<i class="fa-solid fa-bookmark"></i>';
+    bmBtn.title = 'Simpan bookmark';
+    bmBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await toggleBookmark(v, wrap, bmBtn);
+    });
+
+    wrap.appendChild(numEl);
+    wrap.appendChild(textEl);
+    wrap.appendChild(bmBtn);
+    versesEl.appendChild(wrap);
     firstVerse = false;
   });
-
   showContent();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Bookmark toggle ───────────────────────────────────────────
+async function toggleBookmark(verse, wrap, btn) {
+  if (!db) return;
+  const id = `${curBook.abbr}-${curChapter}-${verse.v}`;
+  const existing = await dbGet('bookmarks', id);
+  if (existing) {
+    await dbDelete('bookmarks', id);
+    btn.classList.remove('saved');
+    wrap.classList.remove('highlighted-verse');
+    showToast('Bookmark dihapus');
+  } else {
+    await dbPut('bookmarks', {
+      id, book: curBook.abbr, bookName: curBook.name,
+      chapter: curChapter, verse: verse.v,
+      text: verse.t, date: Date.now()
+    });
+    btn.classList.add('saved');
+    wrap.classList.add('highlighted-verse');
+    showToast('✓ Disimpan ke bookmark');
+  }
 }
 
 // ── UI helpers ───────────────────────────────────────────────
@@ -844,8 +1233,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     renderBooks();
   });
 });
-
-// ── Search ───────────────────────────────────────────────────
 searchInput.addEventListener('input', renderBooks);
 
 // ── Font size ─────────────────────────────────────────────────
@@ -858,19 +1245,220 @@ document.getElementById('font-dec').addEventListener('click', () => {
   versesEl.style.fontSize = fontSize + 'rem';
 });
 
+// ── Full-text Search ──────────────────────────────────────────
+const searchPanel  = document.getElementById('search-panel');
+const ftInput      = document.getElementById('ft-input');
+const ftStatus     = document.getElementById('ft-status');
+const ftResults    = document.getElementById('ft-results');
+
+async function buildSearchIndex() {
+  if (searchIndexBuilt || searchIndexBuilding) return;
+  searchIndexBuilding = true;
+  ftStatus.textContent = 'Membangun indeks pencarian… (sekali saja)';
+  miniSearch = new MiniSearch({
+    fields: ['t'],
+    storeFields: ['book', 'bookName', 'chapter', 'verse', 't'],
+    searchOptions: { prefix: true, fuzzy: 0.15, boost: { t: 1 } }
+  });
+  const docs = [];
+  let id = 0;
+  for (const book of BOOKS) {
+    let bookData = cache[book.abbr];
+    if (!bookData) {
+      try {
+        const res = await fetch(`data/${book.abbr}.json`);
+        bookData = await res.json();
+        cache[book.abbr] = bookData;
+      } catch { continue; }
+    }
+    for (const [ch, verses] of Object.entries(bookData)) {
+      for (const v of verses) {
+        if (v.v == 0) continue;
+        docs.push({ id: id++, book: book.abbr, bookName: book.name, chapter: parseInt(ch), verse: v.v, t: v.t });
+      }
+    }
+    ftStatus.textContent = `Memuat… ${book.name}`;
+    await new Promise(r => setTimeout(r, 0)); // yield UI
+  }
+  miniSearch.addAll(docs);
+  searchIndexBuilt = true;
+  searchIndexBuilding = false;
+  ftStatus.textContent = `Indeks siap — ${docs.length.toLocaleString('id')} ayat terindeks`;
+}
+
+function highlightMatch(text, terms) {
+  let result = text;
+  terms.forEach(term => {
+    const re = new RegExp(`(${term})`, 'gi');
+    result = result.replace(re, '<mark>$1</mark>');
+  });
+  return result;
+}
+
+function runSearch() {
+  const q = ftInput.value.trim();
+  if (!q) { ftResults.innerHTML = ''; return; }
+  if (!searchIndexBuilt) { ftStatus.textContent = 'Indeks belum siap, tunggu sebentar…'; return; }
+  const results = miniSearch.search(q, { limit: 50 });
+  const terms = q.toLowerCase().split(/\s+/);
+  if (!results.length) {
+    ftResults.innerHTML = `<div class="ft-empty">Tidak ada hasil untuk "<strong>${q}</strong>"</div>`;
+    ftStatus.textContent = '0 hasil ditemukan';
+    return;
+  }
+  ftStatus.textContent = `${results.length} hasil ditemukan`;
+  ftResults.innerHTML = '';
+  results.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'ft-result-item';
+    item.innerHTML = `
+      <div class="ft-ref">${r.bookName} ${r.chapter}:${r.verse}</div>
+      <div class="ft-text">${highlightMatch(r.t, terms)}</div>`;
+    item.addEventListener('click', () => {
+      const book = BOOKS.find(b => b.abbr === r.book);
+      closeSearchPanel();
+      selectBook(book, r.chapter);
+      // Highlight target verse after render
+      setTimeout(() => {
+        const target = versesEl.querySelector(`[data-verse="${r.verse}"]`);
+        if (target) {
+          target.classList.add('highlighted-verse');
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 600);
+    });
+    ftResults.appendChild(item);
+  });
+}
+
+function openSearchPanel() {
+  searchPanel.classList.add('open');
+  closeSidebar();
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('bnav-search').classList.add('active');
+  buildSearchIndex();
+  setTimeout(() => ftInput.focus(), 200);
+}
+function closeSearchPanel() {
+  searchPanel.classList.remove('open');
+  document.getElementById('bnav-search').classList.remove('active');
+}
+
+document.getElementById('ft-close-btn').addEventListener('click', closeSearchPanel);
+ftInput.addEventListener('input', () => {
+  if (ftInput.value.length >= 2) runSearch();
+  else { ftResults.innerHTML = ''; }
+});
+ftInput.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+
+// Desktop search shortcut (Ctrl+F / Cmd+F override)
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+    e.preventDefault();
+    openSearchPanel();
+  }
+});
+
+// ── Bookmark Panel ────────────────────────────────────────────
+const bookmarkPanel = document.getElementById('bookmark-panel');
+
+async function openBookmarkPanel() {
+  bookmarkPanel.classList.add('open');
+  closeSidebar();
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('bnav-bookmark').classList.add('active');
+  await renderBookmarkList();
+}
+function closeBookmarkPanel() {
+  bookmarkPanel.classList.remove('open');
+  document.getElementById('bnav-bookmark').classList.remove('active');
+}
+
+async function renderBookmarkList() {
+  const listEl = document.getElementById('bookmark-list');
+  if (!db) { listEl.innerHTML = '<div class="bm-empty">Database tidak tersedia.</div>'; return; }
+  const all = await dbGetAll('bookmarks');
+  all.sort((a, b) => b.date - a.date);
+  if (!all.length) {
+    listEl.innerHTML = '<div class="bm-empty"><i class="fa-regular fa-bookmark" style="font-size:2rem;display:block;margin-bottom:12px;color:var(--gold-pale)"></i>Belum ada bookmark.<br>Ketuk nomor ayat lalu ikon bookmark untuk menyimpan.</div>';
+    return;
+  }
+  listEl.innerHTML = '';
+  all.forEach(bm => {
+    const item = document.createElement('div');
+    item.className = 'bm-item';
+    item.innerHTML = `
+      <span class="bm-icon"><i class="fa-solid fa-bookmark"></i></span>
+      <div class="bm-info">
+        <div class="bm-ref">${bm.bookName} ${bm.chapter}:${bm.verse}</div>
+        <div class="bm-preview">${bm.text}</div>
+      </div>
+      <button class="bm-delete" data-id="${bm.id}" title="Hapus bookmark"><i class="fa-solid fa-trash"></i></button>`;
+    item.querySelector('.bm-info').addEventListener('click', () => {
+      const book = BOOKS.find(b => b.abbr === bm.book);
+      closeBookmarkPanel();
+      selectBook(book, bm.chapter);
+      setTimeout(() => {
+        const target = versesEl.querySelector(`[data-verse="${bm.verse}"]`);
+        if (target) {
+          target.classList.add('highlighted-verse');
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 600);
+    });
+    item.querySelector('.bm-delete').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await dbDelete('bookmarks', bm.id);
+      showToast('Bookmark dihapus');
+      await renderBookmarkList();
+      // Update icon if currently viewing same chapter
+      if (curBook && curBook.abbr === bm.book && curChapter === bm.chapter) {
+        const bmBtn = versesEl.querySelector(`[data-verse="${bm.verse}"] .verse-bm-btn`);
+        if (bmBtn) bmBtn.classList.remove('saved');
+      }
+    });
+    listEl.appendChild(item);
+  });
+}
+
+document.getElementById('bm-close-btn').addEventListener('click', closeBookmarkPanel);
+
+// ── Desktop Search button in topbar ──────────────────────────
+// Add search button to desktop topbar
+(function addDesktopSearch() {
+  const fontCtrl = document.getElementById('font-controls');
+  const btn = document.createElement('button');
+  btn.className = 'font-btn';
+  btn.title = 'Cari Ayat (Ctrl+F)';
+  btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i>';
+  btn.addEventListener('click', openSearchPanel);
+  const bmBtn = document.createElement('button');
+  bmBtn.className = 'font-btn';
+  bmBtn.title = 'Bookmark';
+  bmBtn.innerHTML = '<i class="fa-solid fa-bookmark"></i>';
+  bmBtn.addEventListener('click', openBookmarkPanel);
+  fontCtrl.prepend(bmBtn);
+  fontCtrl.prepend(btn);
+})();
+
 // ── Mobile bottom nav ─────────────────────────────────────────
-const bnavBooks = document.getElementById('bnav-books');
-const bnavPrev  = document.getElementById('bnav-prev');
-const bnavNext  = document.getElementById('bnav-next');
+const bnavBooks    = document.getElementById('bnav-books');
+const bnavPrev     = document.getElementById('bnav-prev');
+const bnavNext     = document.getElementById('bnav-next');
+const bnavSearch   = document.getElementById('bnav-search');
+const bnavBookmark = document.getElementById('bnav-bookmark');
 
 if (bnavBooks) {
   bnavBooks.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('visible');
-    bnavBooks.classList.toggle('active', sidebar.classList.contains('open'));
+    const isOpen = sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible', isOpen);
+    bnavBooks.classList.toggle('active', isOpen);
+    if (isOpen) { searchPanel.classList.remove('open'); bookmarkPanel.classList.remove('open'); }
   });
   bnavPrev.addEventListener('click', () => prevBtn.click());
   bnavNext.addEventListener('click', () => nextBtn.click());
+  bnavSearch.addEventListener('click', openSearchPanel);
+  bnavBookmark.addEventListener('click', openBookmarkPanel);
 }
 
 overlay.addEventListener('click', closeSidebar);
@@ -882,13 +1470,72 @@ function closeSidebar() {
 
 // ── Keyboard ─────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.target === searchInput) return;
+  if (e.target === searchInput || e.target === ftInput) return;
+  if (e.key === 'Escape') { closeSearchPanel(); closeBookmarkPanel(); closeSidebar(); }
   if (e.key === 'ArrowRight') nextBtn.click();
   if (e.key === 'ArrowLeft')  prevBtn.click();
 });
 
+// ── PWA Install ───────────────────────────────────────────────
+const installBanner = document.getElementById('install-banner');
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  installBanner.classList.add('visible');
+});
+document.getElementById('install-btn').addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') showToast('✓ Alkitab TB berhasil diinstall!');
+  deferredInstallPrompt = null;
+  installBanner.classList.remove('visible');
+});
+document.getElementById('install-dismiss').addEventListener('click', () => {
+  installBanner.classList.remove('visible');
+});
+window.addEventListener('appinstalled', () => {
+  installBanner.classList.remove('visible');
+  showToast('✓ Alkitab TB sudah diinstall');
+});
+
+// ── Service Worker ────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    console.log('SW registered:', reg.scope);
+  }).catch(err => console.warn('SW failed:', err));
+}
+
 // ── Init ─────────────────────────────────────────────────────
-renderBooks();
+(async function init() {
+  try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
+  renderBooks();
+})();
 </script>
+
+<!-- ── Search Panel ── -->
+<div id="search-panel">
+  <div id="search-panel-header">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <h2><i class="fa-solid fa-magnifying-glass" style="color:var(--gold);margin-right:8px;font-size:.9em"></i>Cari Ayat</h2>
+      <button id="ft-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="ft-search-wrap">
+      <input type="search" id="ft-input" placeholder="Ketik kata atau frasa…" autocomplete="off" />
+    </div>
+    <div id="ft-status">Ketuk tombol Cari di bawah untuk memulai</div>
+  </div>
+  <div id="ft-results"></div>
+</div>
+
+<!-- ── Bookmark Panel ── -->
+<div id="bookmark-panel">
+  <div id="bookmark-panel-header">
+    <h2><i class="fa-solid fa-bookmark" style="color:var(--gold);margin-right:8px;font-size:.9em"></i>Bookmark</h2>
+    <button id="bm-close-btn" title="Tutup"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div id="bookmark-list"></div>
+</div>
+
 </body>
 </html>

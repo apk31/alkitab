@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg512" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#2d1f0e"/>
+      <stop offset="100%" stop-color="#1a1209"/>
+    </radialGradient>
+    <radialGradient id="glow512" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d4a843" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#d4a843" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cross512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c060"/>
+      <stop offset="50%" stop-color="#d4a843"/>
+      <stop offset="100%" stop-color="#b8892a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="100" fill="url(#bg512)"/>
+
+  <!-- Subtle outer border -->
+  <rect width="512" height="512" rx="100" fill="none" stroke="#b8892a" stroke-width="3" stroke-opacity="0.25"/>
+
+  <!-- Inner frame -->
+  <rect x="22" y="22" width="468" height="468" rx="82" fill="none" stroke="#b8892a" stroke-width="1" stroke-opacity="0.15"/>
+
+  <!-- Glow behind cross -->
+  <ellipse cx="256" cy="254" rx="145" ry="175" fill="url(#glow512)"/>
+
+  <!-- Cross shadow -->
+  <rect x="233" y="96" width="48" height="278" rx="8" fill="#000" fill-opacity="0.3" transform="translate(5,5)"/>
+  <rect x="144" y="178" width="224" height="48" rx="8" fill="#000" fill-opacity="0.3" transform="translate(5,5)"/>
+
+  <!-- Cross body -->
+  <rect x="231" y="94" width="50" height="280" rx="9" fill="url(#cross512)"/>
+  <rect x="142" y="176" width="228" height="50" rx="9" fill="url(#cross512)"/>
+
+  <!-- Cross highlight -->
+  <rect x="231" y="94" width="16" height="280" rx="9" fill="#fff" fill-opacity="0.15"/>
+  <rect x="142" y="176" width="228" height="16" rx="9" fill="#fff" fill-opacity="0.15"/>
+
+  <!-- Cross inner shine -->
+  <rect x="240" y="100" width="6" height="268" rx="3" fill="#fff" fill-opacity="0.08"/>
+
+  <!-- Corner decorative dots -->
+  <circle cx="96" cy="96" r="7" fill="#b8892a" fill-opacity="0.35"/>
+  <circle cx="416" cy="96" r="7" fill="#b8892a" fill-opacity="0.35"/>
+  <circle cx="96" cy="416" r="7" fill="#b8892a" fill-opacity="0.35"/>
+  <circle cx="416" cy="416" r="7" fill="#b8892a" fill-opacity="0.35"/>
+
+  <!-- Decorative horizontal lines -->
+  <line x1="72" y1="70" x2="180" y2="70" stroke="#b8892a" stroke-width="1.5" stroke-opacity="0.3"/>
+  <line x1="332" y1="70" x2="440" y2="70" stroke="#b8892a" stroke-width="1.5" stroke-opacity="0.3"/>
+  <line x1="72" y1="442" x2="180" y2="442" stroke="#b8892a" stroke-width="1.5" stroke-opacity="0.3"/>
+  <line x1="332" y1="442" x2="440" y2="442" stroke="#b8892a" stroke-width="1.5" stroke-opacity="0.3"/>
+
+  <!-- Diamond ornaments top/bottom center -->
+  <polygon points="256,452 263,462 256,472 249,462" fill="#b8892a" fill-opacity="0.55"/>
+  <polygon points="256,40 263,50 256,60 249,50" fill="#b8892a" fill-opacity="0.55"/>
+
+  <!-- Side diamond ornaments -->
+  <polygon points="48,256 56,263 48,270 40,263" fill="#b8892a" fill-opacity="0.35"/>
+  <polygon points="464,256 472,263 464,270 456,263" fill="#b8892a" fill-opacity="0.35"/>
+
+  <!-- Subtle text "TB" below cross -->
+  <text x="256" y="428" font-size="28" text-anchor="middle" fill="#b8892a" fill-opacity="0.5"
+    font-family="Georgia, serif" letter-spacing="8" font-weight="bold">ALKITAB</text>
+</svg>
