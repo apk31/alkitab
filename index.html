@@ -1620,22 +1620,40 @@ if (bnavBooks) {
   });
 
   // ── Drag sidebar ke bawah untuk tutup ──────────────────────
+  // Hanya aktif jika drag dimulai dari sidebar-header (drag handle area),
+  // BUKAN dari #book-list supaya scroll list tidak terganggu.
   let dragStartY = 0, dragStarted = false;
-  sidebar.addEventListener('touchstart', e => {
+  const sidebarHeader = document.getElementById('sidebar-header');
+  const bookListScroll = document.getElementById('book-list');
+
+  sidebarHeader.addEventListener('touchstart', e => {
     dragStartY = e.touches[0].clientY;
     dragStarted = true;
   }, { passive: true });
+
+  // touchmove dan touchend tetap di sidebar level agar smooth,
+  // tapi hanya bereaksi jika dragStarted (dari header)
   sidebar.addEventListener('touchmove', e => {
     if (!dragStarted) return;
     const dy = e.touches[0].clientY - dragStartY;
-    if (dy > 0) sidebar.style.transform = `translateY(${dy}px)`;
+    if (dy > 0) {
+      sidebar.style.transition = 'none';
+      sidebar.style.transform = `translateY(${dy}px)`;
+    }
   }, { passive: true });
+
   sidebar.addEventListener('touchend', e => {
     if (!dragStarted) return;
     dragStarted = false;
+    sidebar.style.transition = '';
     const dy = e.changedTouches[0].clientY - dragStartY;
     sidebar.style.transform = '';
-    if (dy > 80) closeSidebar();   // tarik > 80px → tutup
+    if (dy > 80) closeSidebar();
+  }, { passive: true });
+
+  // Pastikan scroll di book-list tidak mentrigger drag
+  bookListScroll.addEventListener('touchstart', e => {
+    dragStarted = false; // batalkan drag jika sentuhan mulai dari list
   }, { passive: true });
   bnavPrev.addEventListener('click', () => prevBtn.click());
   bnavNext.addEventListener('click', () => nextBtn.click());
