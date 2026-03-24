@@ -451,20 +451,25 @@
 
     /* ── Bookmark button on verse ── */
     .verse-bm-btn {
-      display: inline-block;
-      opacity: 0;
-      margin-left: 4px;
+      display: none;          /* tersembunyi by default */
+      margin-left: 5px;
       cursor: pointer;
-      color: rgba(184,137,42,.4);
-      font-size: .85rem;
+      color: rgba(184,137,42,.35);
+      font-size: .8rem;
       vertical-align: middle;
-      transition: opacity .2s, color .2s;
+      transition: color .2s, transform .15s;
       background: none;
       border: none;
       padding: 0 2px;
     }
-    .verse-wrap:hover .verse-bm-btn { opacity: 1; }
-    .verse-bm-btn.saved { opacity: 1; color: var(--gold); }
+    /* Muncul saat ayat aktif (diklik) */
+    .verse-wrap.verse-active .verse-bm-btn { display: inline-block; }
+    /* Jika sudah disimpan: selalu tampil kecil, warna gold */
+    .verse-bm-btn.saved {
+      display: inline-block;
+      color: var(--gold);
+    }
+    .verse-bm-btn:active { transform: scale(1.3); }
 
     /* ── Toast notification ── */
     #toast {
@@ -635,10 +640,11 @@
       margin: 28px 0 10px;
       letter-spacing: .01em;
     }
-    .highlighted-verse .verse-text {
-      background: var(--gold-pale);
+    /* Highlight: hanya warna background ringan, TANPA spacing/padding ekstra */
+    .verse-wrap.verse-active .verse-text,
+    .verse-wrap.highlighted-verse .verse-text {
+      background: rgba(212,168,67,.13);
       border-radius: 3px;
-      padding: 0 2px;
     }
 
     /* Loading / Welcome / Error */
@@ -1293,9 +1299,12 @@ async function renderVerses(verses) {
     numEl.className = 'verse-number' + (firstVerse ? ' v1' : '');
     numEl.textContent = v.v;
     numEl.addEventListener('click', () => {
-      document.querySelectorAll('.highlighted-verse').forEach(el => el.classList.remove('highlighted-verse'));
-      wrap.classList.add('highlighted-verse');
-      wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const isAlreadyActive = wrap.classList.contains('verse-active');
+      // Nonaktifkan semua ayat yang sedang aktif (tapi pertahankan 'highlighted-verse' untuk bookmark)
+      document.querySelectorAll('.verse-active').forEach(el => el.classList.remove('verse-active'));
+      if (!isAlreadyActive) {
+        wrap.classList.add('verse-active');
+      }
     });
 
     const textEl = document.createElement('span');
@@ -1305,6 +1314,7 @@ async function renderVerses(verses) {
     // Bookmark button
     const bmBtn = document.createElement('button');
     bmBtn.className = 'verse-bm-btn' + (savedIds.has(v.v) ? ' saved' : '');
+    if (savedIds.has(v.v)) wrap.classList.add('highlighted-verse');
     bmBtn.innerHTML = '<svg class="ic" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>';
     bmBtn.title = 'Simpan bookmark';
     bmBtn.addEventListener('click', async (e) => {
@@ -1331,6 +1341,7 @@ async function toggleBookmark(verse, wrap, btn) {
     await dbDelete('bookmarks', id);
     btn.classList.remove('saved');
     wrap.classList.remove('highlighted-verse');
+    // Tetap aktif setelah hapus bookmark supaya user bisa simpan lagi
     showToast('Bookmark dihapus');
   } else {
     await dbPut('bookmarks', {
@@ -1339,7 +1350,8 @@ async function toggleBookmark(verse, wrap, btn) {
       text: verse.t, date: Date.now()
     });
     btn.classList.add('saved');
-    wrap.classList.add('highlighted-verse');
+    wrap.classList.add('highlighted-verse'); // penanda permanen
+    wrap.classList.remove('verse-active');   // tidak perlu active lagi
     showToast('✓ Disimpan ke bookmark');
   }
 }
@@ -1477,7 +1489,8 @@ function runSearch() {
       setTimeout(() => {
         const target = versesEl.querySelector(`[data-verse="${r.verse}"]`);
         if (target) {
-          target.classList.add('highlighted-verse');
+          document.querySelectorAll('.verse-active').forEach(el => el.classList.remove('verse-active'));
+          target.classList.add('verse-active');
           target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       }, 600);
