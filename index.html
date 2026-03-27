@@ -1669,6 +1669,20 @@ if ('serviceWorker' in navigator) {
   }).catch(err => console.warn('[SW] Failed:', err));
 }
 
+<<<<<<< HEAD
+=======
+// ── Chapter label clickable di mobile (buka sidebar) ─────────
+document.getElementById('chapter-label').addEventListener('click', () => {
+  if (window.innerWidth <= 768) {
+    const isOpen = sidebar.classList.toggle('open');
+    overlay.classList.toggle('visible', isOpen);
+    if (bnavBooks) bnavBooks.classList.toggle('active', isOpen);
+    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); document.body.classList.add('no-overscroll'); }
+    else { document.body.classList.remove('no-overscroll'); }
+  }
+});
+
+>>>>>>> parent of 4171395 (update welcome screen)
 // ── Init ─────────────────────────────────────────────────────
 (async function init() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
