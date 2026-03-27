@@ -1,48 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<<<<<<< HEAD
-    <title>Index Page</title>
-    <script>
-        let loading = false;
-        
-        // Function to handle arrow key navigation
-        function handleArrowKeys(event) {
-            if (loading) return; // Prevent race condition during loading state
-            // Your navigation logic here
-        }
-        
-        // Function to throttle button clicks
-        const throttle = (func, limit) => {
-            let lastFunc;
-            let lastRan;
-            return function() {
-                const context = this;
-                const args = arguments;
-                if (!lastRan) {
-                    func.apply(context, args);
-                    lastRan = Date.now();
-                } else {
-                    clearTimeout(lastFunc);
-                    lastFunc = setTimeout(function() {
-                        if ((Date.now() - lastRan) >= limit) {
-                            func.apply(context, args);
-                            lastRan = Date.now();
-                        }
-                    }, limit - (Date.now() - lastRan));
-                }
-            };
-        };
-        
-        // Example of restricting button clicks
-        const clickButton = throttle(() => {
-            // Your button click logic here
-        }, 1000);
-        
-        document.addEventListener('keydown', handleArrowKeys);
-        document.getElementById('myButton').addEventListener('click', clickButton);
-    </script>
-=======
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alkitab – Terjemahan Baru</title>
@@ -89,7 +47,6 @@
       color: var(--ink);
       min-height: 100vh;
       overflow-x: hidden;
-      overscroll-behavior-y: none; /* cegah pull-to-refresh browser di mobile */
     }
 
     /* ── Sidebar ── */
@@ -173,25 +130,22 @@
     .book-item {
       display: flex;
       align-items: center;
-      padding: 14px 24px;
+      padding: 9px 24px;
       cursor: pointer;
-      font-size: 1.05rem;
+      font-size: .92rem;
       color: rgba(250,246,239,.72);
       transition: background .15s, color .15s;
       border-left: 3px solid transparent;
-      min-height: 52px;        /* touch target minimum Apple/Google guideline */
-      border-bottom: 1px solid rgba(255,255,255,.04);
     }
     .book-item:hover { background: rgba(255,255,255,.06); color: var(--parchment); }
-    .book-item:active { background: rgba(212,168,67,.12); }
     .book-item.active {
       background: rgba(212,168,67,.1);
       color: var(--gold-light);
       border-left-color: var(--gold);
     }
     .book-abbr {
-      width: 46px;
-      font-size: .8rem;
+      width: 42px;
+      font-size: .74rem;
       color: rgba(250,246,239,.3);
       flex-shrink: 0;
     }
@@ -493,25 +447,20 @@
 
     /* ── Bookmark button on verse ── */
     .verse-bm-btn {
-      display: none;          /* tersembunyi by default */
-      margin-left: 5px;
+      display: inline-block;
+      opacity: 0;
+      margin-left: 4px;
       cursor: pointer;
-      color: rgba(184,137,42,.35);
-      font-size: .8rem;
+      color: rgba(184,137,42,.4);
+      font-size: .85rem;
       vertical-align: middle;
-      transition: color .2s, transform .15s;
+      transition: opacity .2s, color .2s;
       background: none;
       border: none;
       padding: 0 2px;
     }
-    /* Muncul saat ayat aktif (diklik) */
-    .verse-wrap.verse-active .verse-bm-btn { display: inline-block; }
-    /* Jika sudah disimpan: selalu tampil kecil, warna gold */
-    .verse-bm-btn.saved {
-      display: inline-block;
-      color: var(--gold);
-    }
-    .verse-bm-btn:active { transform: scale(1.3); }
+    .verse-wrap:hover .verse-bm-btn { opacity: 1; }
+    .verse-bm-btn.saved { opacity: 1; color: var(--gold); }
 
     /* ── Toast notification ── */
     #toast {
@@ -682,11 +631,10 @@
       margin: 28px 0 10px;
       letter-spacing: .01em;
     }
-    /* Highlight: hanya warna background ringan, TANPA spacing/padding ekstra */
-    .verse-wrap.verse-active .verse-text,
-    .verse-wrap.highlighted-verse .verse-text {
-      background: rgba(212,168,67,.13);
+    .highlighted-verse .verse-text {
+      background: var(--gold-pale);
       border-radius: 3px;
+      padding: 0 2px;
     }
 
     /* Loading / Welcome / Error */
@@ -772,9 +720,6 @@
     }
     #overlay.visible { display: block; }
 
-    /* Cegah pull-to-refresh saat sidebar/panel terbuka */
-    body.no-overscroll { overscroll-behavior-y: none; }
-
     /* ── Mobile ── */
     @media (max-width: 768px) {
       /* Sidebar: full screen overlay dari bawah */
@@ -834,24 +779,6 @@
       }
       .label-mobile { display: inline; }
       .label-desktop { display: none; }
-      /* Nama kitab clickable di mobile */
-      #chapter-label {
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        justify-content: center;
-      }
-      #chapter-label::after {
-        content: '';
-        display: inline-block;
-        width: 8px; height: 8px;
-        border-right: 2px solid var(--gold);
-        border-bottom: 2px solid var(--gold);
-        transform: rotate(45deg) translateY(-2px);
-        opacity: .6;
-        flex-shrink: 0;
-      }
 
       #topbar-row2 {
         display: none;
@@ -895,10 +822,8 @@
       #toast { bottom: 32px; }
     }
   </style>
->>>>>>> parent of 4171395 (update welcome screen)
 </head>
 <body>
-<<<<<<< HEAD
 
 <aside id="sidebar">
   <div id="sidebar-header">
@@ -1744,23 +1669,6 @@ if ('serviceWorker' in navigator) {
   }).catch(err => console.warn('[SW] Failed:', err));
 }
 
-<<<<<<< HEAD
-=======
-// ── Chapter label clickable di mobile (buka sidebar) ─────────
-document.getElementById('chapter-label').addEventListener('click', () => {
-  if (window.innerWidth <= 768) {
-    const isOpen = sidebar.classList.toggle('open');
-    overlay.classList.toggle('visible', isOpen);
-    if (bnavBooks) bnavBooks.classList.toggle('active', isOpen);
-    if (isOpen) { closeSearchPanel(); closeBookmarkPanel(); document.body.classList.add('no-overscroll'); }
-    else { document.body.classList.remove('no-overscroll'); }
-  }
-});
-
-<<<<<<< HEAD
->>>>>>> parent of 4171395 (update welcome screen)
-=======
->>>>>>> parent of 4171395 (update welcome screen)
 // ── Init ─────────────────────────────────────────────────────
 (async function init() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
@@ -1768,9 +1676,5 @@ document.getElementById('chapter-label').addEventListener('click', () => {
 })();
 </script>
 
-=======
-    <h1>Welcome to the Index Page!</h1>
-    <button id="myButton">Click Me!</button>
->>>>>>> db300b42f204f3f91e75074d233352ec677ab581
 </body>
 </html>
