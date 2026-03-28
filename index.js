@@ -1,4 +1,3 @@
-renderContinueReading();
 // ── Book list ────────────────────────────────────────────────
 const BOOKS = [
   {no:1,abbr:"Kej",name:"Kejadian",chapter:50,t:"old"},
@@ -180,6 +179,10 @@ function renderContinueReading() {
   continueCard.onclick = () => {
     selectBook(book, ch);
   };
+  continueCard.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  openHistoryPanel();
+});
 }
 
 // ── Render book list ─────────────────────────────────────────
@@ -274,6 +277,56 @@ function saveReadingHistory(abbr, ch) {
 
   localStorage.setItem('alkitab-history-list', JSON.stringify(history));
   localStorage.setItem('alkitab-history', JSON.stringify({ abbr, ch }));
+}
+function renderHistoryList() {
+  const history = JSON.parse(
+    localStorage.getItem('alkitab-history-list') || '[]'
+  );
+
+  historyList.innerHTML = '';
+
+  if (!history.length) {
+    historyList.innerHTML = `
+      <div class="bm-empty">
+        Belum ada riwayat bacaan.
+      </div>
+    `;
+    return;
+  }
+
+  history.forEach(item => {
+    const book = BOOKS.find(b => b.abbr === item.abbr);
+    if (!book) return;
+
+    const div = document.createElement('div');
+    div.className = 'history-item';
+
+    div.innerHTML = `
+      <div class="history-ref">${book.name} ${item.ch}</div>
+      <div class="history-time">${formatHistoryTime(item.date)}</div>
+    `;
+
+    div.addEventListener('click', () => {
+      closeHistoryPanel();
+      selectBook(book, item.ch);
+    });
+
+    historyList.appendChild(div);
+  });
+}
+function formatHistoryTime(timestamp) {
+  const diff = Date.now() - timestamp;
+
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+
+  if (mins < 1) return 'baru saja';
+  if (mins < 60) return `${mins} menit lalu`;
+  if (hours < 24) return `${hours} jam lalu`;
+  if (days < 7) return `${days} hari lalu`;
+
+  return new Date(timestamp).toLocaleDateString('id-ID');
 }
 
 // ── Render verses ────────────────────────────────────────────
@@ -519,6 +572,7 @@ function runSearch() {
 }
 
 function openSearchPanel() {
+    closeHistoryPanel();
   closeBookmarkPanel();
   closeSidebar();
   searchPanel.classList.add('open');
@@ -551,8 +605,13 @@ document.addEventListener('keydown', e => {
 
 // ── Bookmark Panel ────────────────────────────────────────────
 const bookmarkPanel = document.getElementById('bookmark-panel');
+const historyPanel = document.getElementById('history-panel');
+const historyList = document.getElementById('history-list');
+const historyBtn = document.getElementById('history-btn');
+const historyCloseBtn = document.getElementById('history-close-btn');
 
 async function openBookmarkPanel() {
+    closeHistoryPanel();
   closeSearchPanel();
   closeSidebar();
   bookmarkPanel.classList.add('open');
@@ -567,7 +626,23 @@ function closeBookmarkPanel() {
   if (document.getElementById('bnav-bookmark'))
     document.getElementById('bnav-bookmark').classList.remove('active');
 }
+function openHistoryPanel() {
+  closeSearchPanel();
+  closeBookmarkPanel();
+  closeSidebar();
 
+  historyPanel.classList.add('open');
+  document.body.classList.add('no-overscroll');
+
+  renderHistoryList();
+}
+
+function closeHistoryPanel() {
+  historyPanel.classList.remove('open');
+  document.body.classList.remove('no-overscroll');
+}
+historyBtn.addEventListener('click', openHistoryPanel);
+historyCloseBtn.addEventListener('click', closeHistoryPanel);
 async function renderBookmarkList() {
   const listEl = document.getElementById('bookmark-list');
   if (!db) { listEl.innerHTML = '<div class="bm-empty">Database tidak tersedia.</div>'; return; }
@@ -894,6 +969,7 @@ function startWelcomeAnimations() {
 (async function init() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
   renderBooks();
+  renderContinueReading();
   
   // ✦ NEW: Cek riwayat bacaan terakhir
   let loadedFromHistory = false;

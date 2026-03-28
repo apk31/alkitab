@@ -93,7 +93,11 @@
       <button class="nav-btn" id="prev-btn" disabled>&#8592;</button>
       <button class="nav-btn" id="next-btn" disabled>&#8594;</button>
       <div id="font-controls">
-        <button class="font-btn" id="history-btn" title="Riwayat">🕘</button>
+        <button class="font-btn" id="history-btn" title="Riwayat">
+  <svg class="ic" viewBox="0 0 512 512">
+    <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm16-312h-32v128l96 64 17.8-26.7-81.8-54.5V144z"/>
+  </svg>
+</button>
         <button class="font-btn" id="font-dec" title="Perkecil">A−</button>
         <button class="font-btn" id="font-inc" title="Perbesar">A+</button>
       </div>
@@ -173,6 +177,24 @@
     <button id="bm-close-btn" title="Tutup" style="width:36px;height:36px;background:none;border:1px solid rgba(184,137,42,.3);border-radius:8px;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
   </div>
   <div id="bookmark-list"></div>
+  <!-- ── History Panel ── -->
+<div id="history-panel">
+  <div id="history-panel-header">
+    <h2>
+      <svg class="ic" style="color:var(--gold);width:1em;height:1em;vertical-align:-.08em" viewBox="0 0 512 512">
+        <path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm16 136v112h96v32H240V144h32z"/>
+      </svg>
+      Riwayat Bacaan
+    </h2>
+    <button id="history-close-btn" title="Tutup">
+      <svg class="ic" viewBox="0 0 384 512">
+        <path fill="currentColor" d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3l105.4 105.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="history-list"></div>
+</div>
 </div>
 <script src="search.js"></script>
 <script src="index.js"></script>
