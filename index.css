@@ -594,31 +594,49 @@
       color: var(--ink-mid);
     }
     .verse-number {
-      display: inline-block;
+        flex: 0 0 24px;
+  width: 24px;
+  text-align: right;
+  font-size: 0.9rem;
+  /* font-weight: 700; */
+  /* color: var(--gold); */
+  line-height: 1.8;
+  margin: 0;
+  vertical-align: baseline;
+  /* background: rgba(184,137,42,.12); */
+  border-radius: 4px;
+  /* padding: 1px 4px; */
+      /* display: inline-block; */
       font-family: var(--font-body);
-      font-size: 1rem;
+      /* font-size: 1rem; */
       font-weight: 700;
       color: var(--gold);
-      vertical-align: super;
-      margin-right: 3px;
-      margin-left: 10px;
-      line-height: 1;
+      /* vertical-align: super; */
+      /* margin-right: 3px; */
+      /* margin-left: 10px; */
+      /* line-height: 1; */
       letter-spacing: 0;
       cursor: pointer;
       transition: color .15s;
       user-select: none;
       background: rgba(184,137,42,.12);
       padding: 1px 4px;
-      border-radius: 3px;
+      /* border-radius: 3px; */
     }
     .verse-number:hover { color: var(--red-accent); }
     .verse-number.v1 { margin-left: 0; }
     /* ✦ NEW: Forces every verse onto its own line with a nice gap */
     .verse-wrap { 
-      display: block; 
-      margin-bottom: 12px; 
+      display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
     }
-    .verse-text { display: inline; }
+    .verse-text {
+  flex: 1;
+  display: block;
+  line-height: 1.9;
+}
     /* Sub-bab (index 0 / v == 0) */
     /* Sub-bab (index 0 / v == 0) */
     .section-heading {
