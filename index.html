@@ -196,12 +196,17 @@
     }
 
     /* ── Main ── */
+    /* ── Main ── */
     #main {
       margin-left: var(--sidebar-w);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: margin-left .35s cubic-bezier(.4,0,.2,1); /* Smooth slide */
     }
+    #main.expanded { margin-left: 0; }
+    #sidebar.closed { transform: translateX(-100%); }
+    #desktop-sidebar-toggle { display: none; border: none; }
 
     /* ── Topbar ── */
     #topbar {
@@ -627,7 +632,13 @@
     }
     .verse-number:hover { color: var(--red-accent); }
     .verse-number.v1 { margin-left: 0; }
+    /* ✦ NEW: Forces every verse onto its own line with a nice gap */
+    .verse-wrap { 
+      display: block; 
+      margin-bottom: 12px; 
+    }
     .verse-text { display: inline; }
+    /* Sub-bab (index 0 / v == 0) */
     /* Sub-bab (index 0 / v == 0) */
     .section-heading {
       display: block;
@@ -935,6 +946,7 @@
       #bottom-nav { display: none !important; }
       #install-banner { bottom: 24px; }
       #toast { bottom: 32px; }
+      #desktop-sidebar-toggle { display: flex; margin-right: 8px; } /* Munculkan tombol */
     }
   </style>
 </head>
@@ -996,10 +1008,11 @@
   <button id="install-dismiss">✕</button>
 </div>
 
-<div id="main">
-  <header id="topbar">
-    <!-- Baris 1: nama kitab (clickable di mobile untuk buka sidebar) -->
+<header id="topbar">
     <div id="topbar-row1">
+      <button id="desktop-sidebar-toggle" class="nav-btn" aria-label="Toggle Sidebar" title="Tutup/Buka Menu">
+        <svg class="ic" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
       <span id="chapter-label" role="button" aria-label="Buka daftar kitab">
         <span class="label-desktop">Pilih kitab di kiri</span>
         <span class="label-mobile">Pilih kitab di bawah</span>
@@ -1364,6 +1377,10 @@ async function loadChapter() {
     }
     const verses = bookData[curChapter] || [];
     await renderVerses(verses);
+    
+    // ✦ NEW: Simpan histori bacaan secara otomatis
+    localStorage.setItem('alkitab-history', JSON.stringify({ abbr: curBook.abbr, ch: curChapter }));
+    
   } catch (e) {
     console.error(e);
     showError();
@@ -1514,6 +1531,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 searchInput.addEventListener('input', renderBooks);
+
+// ── Sidebar Toggle (Desktop) ──────────────────────────────────
+document.getElementById('desktop-sidebar-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('closed');
+  document.getElementById('main').classList.toggle('expanded');
+});
 
 // ── Font size ─────────────────────────────────────────────────
 document.getElementById('font-inc').addEventListener('click', () => {
@@ -1988,9 +2011,26 @@ function startWelcomeAnimations() {
 (async function init() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
   renderBooks();
-  startWelcomeAnimations();
+  
+  // ✦ NEW: Cek riwayat bacaan terakhir
+  let loadedFromHistory = false;
+  const historyStr = localStorage.getItem('alkitab-history');
+  if (historyStr) {
+    try {
+      const h = JSON.parse(historyStr);
+      const book = BOOKS.find(b => b.abbr === h.abbr);
+      if (book) {
+        selectBook(book, h.ch);
+        loadedFromHistory = true;
+      }
+    } catch(e) {}
+  }
+  
+  // Hanya tampilkan layar selamat datang jika tidak ada riwayat
+  if (!loadedFromHistory) {
+    startWelcomeAnimations();
+  }
 })();
 </script>
-
 </body>
 </html>
