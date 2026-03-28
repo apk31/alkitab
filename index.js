@@ -1,4 +1,4 @@
-
+renderContinueReading();
 // ── Book list ────────────────────────────────────────────────
 const BOOKS = [
   {no:1,abbr:"Kej",name:"Kejadian",chapter:50,t:"old"},
@@ -162,6 +162,25 @@ const chapterSubEl   = document.getElementById('chapter-subtitle');
 const versesEl       = document.getElementById('verses-container');
 const sidebar        = document.getElementById('sidebar');
 const overlay        = document.getElementById('overlay');
+const continueCard = document.getElementById('continue-reading-card');
+
+// ── Render "Lanjutkan Bacaan" card jika ada histori ─────────────────
+function renderContinueReading() {
+  const history = localStorage.getItem('alkitab-history');
+  if (!history) return;
+
+  const { abbr, ch } = JSON.parse(history);
+  const book = BOOKS.find(b => b.abbr === abbr);
+  if (!book) return;
+
+  continueCard.style.display = 'block';
+  continueCard.querySelector('.continue-title').textContent = book.name;
+  continueCard.querySelector('.continue-subtitle').textContent = `Pasal ${ch}`;
+
+  continueCard.onclick = () => {
+    selectBook(book, ch);
+  };
+}
 
 // ── Render book list ─────────────────────────────────────────
 function renderBooks() {
@@ -225,7 +244,7 @@ async function loadChapter() {
     await renderVerses(verses);
     
     // ✦ NEW: Simpan histori bacaan secara otomatis
-    localStorage.setItem('alkitab-history', JSON.stringify({ abbr: curBook.abbr, ch: curChapter }));
+    saveReadingHistory(curBook.abbr, curChapter);
     
   } catch (e) {
     console.error(e);
@@ -237,6 +256,24 @@ async function loadChapter() {
     chapterSelect.disabled = false;
     isLoadingChapter = false;
   }
+}
+
+// ── Save reading history ─────────────────────────────────────
+function saveReadingHistory(abbr, ch) {
+  let history = JSON.parse(localStorage.getItem('alkitab-history-list') || '[]');
+
+  history = history.filter(h => !(h.abbr === abbr && h.ch === ch));
+
+  history.unshift({
+    abbr,
+    ch,
+    date: Date.now()
+  });
+
+  history = history.slice(0, 50); // Keep only the latest 50 entries
+
+  localStorage.setItem('alkitab-history-list', JSON.stringify(history));
+  localStorage.setItem('alkitab-history', JSON.stringify({ abbr, ch }));
 }
 
 // ── Render verses ────────────────────────────────────────────
