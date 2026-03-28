@@ -437,24 +437,23 @@
 
     /* ── Bookmark button on verse ── */
     .verse-bm-btn {
-      display: none;          /* tersembunyi by default */
-      margin-left: 5px;
-      cursor: pointer;
-      color: rgba(184,137,42,.35);
-      font-size: .8rem;
-      vertical-align: middle;
-      transition: color .2s, transform .15s;
-      background: none;
-      border: none;
-      padding: 0 2px;
-    }
-    /* Muncul saat ayat aktif (diklik) */
-    .verse-wrap.verse-active .verse-bm-btn { display: inline-block; }
-    /* Jika sudah disimpan: selalu tampil kecil, warna gold */
-    .verse-bm-btn.saved {
-      display: inline-block;
-      color: var(--gold);
-    }
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-8px) scale(0.8);
+  transition: opacity .25s ease, transform .25s ease;
+  /* transform: translateX(-6px) scale(0.9); */
+  /* transition: all 0.25s ease; */
+  margin-left: 6px;
+  margin-top: 2px;
+  align-self: flex-start;
+}
+
+.verse-wrap.verse-active .verse-bm-btn,
+.verse-bm-btn.saved {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+}
     .verse-bm-btn:active { transform: scale(1.3); }
 
     /* ── Toast notification ── */
@@ -594,44 +593,41 @@
       color: var(--ink-mid);
     }
     .verse-number {
-        flex: 0 0 24px;
-  width: 24px;
-  text-align: right;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  transition: transform 0.18s ease, background 0.18s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   font-size: 0.9rem;
-  /* font-weight: 700; */
-  /* color: var(--gold); */
-  line-height: 1.8;
+  font-weight: 700;
+  color: var(--gold);
+
+  line-height: 1;
   margin: 0;
-  vertical-align: baseline;
-  /* background: rgba(184,137,42,.12); */
-  border-radius: 4px;
-  /* padding: 1px 4px; */
-      /* display: inline-block; */
-      font-family: var(--font-body);
-      /* font-size: 1rem; */
-      font-weight: 700;
-      color: var(--gold);
-      /* vertical-align: super; */
-      /* margin-right: 3px; */
-      /* margin-left: 10px; */
-      /* line-height: 1; */
-      letter-spacing: 0;
-      cursor: pointer;
-      transition: color .15s;
-      user-select: none;
-      background: rgba(184,137,42,.12);
-      padding: 1px 4px;
-      /* border-radius: 3px; */
-    }
+  padding: 0;
+
+  background: rgba(184,137,42,.10);
+  border-radius: 6px;
+
+  transform: translateY(2px);
+}
     .verse-number:hover { color: var(--red-accent); }
     .verse-number.v1 { margin-left: 0; }
+    .verse-number:active {
+  transform: scale(0.92);
+}
     /* ✦ NEW: Forces every verse onto its own line with a nice gap */
-    .verse-wrap { 
-      display: flex;
+    .verse-wrap {
+  display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 14px;
-    }
+  position: relative;
+}
     .verse-text {
   flex: 1;
   display: block;
