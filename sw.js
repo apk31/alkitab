@@ -5,7 +5,7 @@
 // sehingga setiap perubahan di sw.js atau BUILD_TIME
 // otomatis trigger update cache.
 //
-const BUILD_TIME  = '20260328-1837'; // diganti otomatis oleh generate_alkitab.py
+const BUILD_TIME  = '20260328-1858'; // diganti otomatis oleh generate_alkitab.py
 const CACHE_DATA  = 'alkitab-data-v1.1.0';          // JSON ayat (jarang berubah)
 const CACHE_SHELL = 'alkitab-shell-' + BUILD_TIME; // shell app (fresh tiap deploy)
 
@@ -41,23 +41,7 @@ self.addEventListener('activate', event => {
 // ── Fetch ─────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-
-  // Data JSON ayat: cache-first + background revalidate
-if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
-  event.respondWith(
-    fetch(event.request)
-      .then(res => {
-        if (res.ok) {
-          caches.open(CACHE_DATA).then(cache => cache.put(event.request, res.clone()));
-        }
-        return res;
-      })
-      .catch(() => 
-        caches.match(event.request)
-          .then(cached => cached || new Response('{}', { headers: { 'Content-Type': 'application/json' } }))
-      )
-  );
-  // App shell (HTML/manifest): network-first → selalu dapat versi terbaru
+// App shell (HTML/manifest): network-first → selalu dapat versi terbaru
 if (
     url.pathname.endsWith('.html') ||
     url.pathname.endsWith('/') ||
@@ -73,7 +57,23 @@ if (
         .catch(() => caches.match(event.request)
           .then(cached => cached || caches.match('./index.html')))
     );
+  // Data JSON ayat: cache-first + background revalidate
+if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
+  event.respondWith(
+    fetch(event.request)
+      .then(res => {
+        if (res.ok) {
+          caches.open(CACHE_DATA).then(cache => cache.put(event.request, res.clone()));
+        }
+        return res;
+      })
+      .catch(() => 
+        caches.match(event.request)
+          .then(cached => cached || new Response('{}', { headers: { 'Content-Type': 'application/json' } }))
+      )
+  );
     return;
+    
   }
 
   // Google Fonts: cache-first (tidak pernah berubah)

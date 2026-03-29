@@ -1,3 +1,4 @@
+let isAppReady = false;
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
     showHome();
@@ -181,9 +182,11 @@ function renderContinueReading() {
   continueCard.querySelector('.continue-title').textContent = book.name;
   continueCard.querySelector('.continue-subtitle').textContent = `Pasal ${ch}`;
 
-  continueCard.onclick = () => {
-    selectBook(book, ch);
-  };
+  continueCard.onclick = null; // reset first
+
+continueCard.addEventListener('click', () => {
+  selectBook(book, ch);
+}, { once: true }); // 🔥 important
   continueCard.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   openHistoryPanel();
@@ -211,6 +214,7 @@ function renderBooks() {
 
 // ── Select book ──────────────────────────────────────────────
 function selectBook(book, ch = 1) {
+  if (!isAppReady) return;
   curBook = book;
   curChapter = ch;
   renderBooks();
@@ -1003,7 +1007,7 @@ console.log('curBook:', curBook);
   renderBooks();
   // renderContinueReading();
   showHome();
-  
+  isAppReady = true;
   // ✦ NEW: Cek riwayat bacaan terakhir
   let loadedFromHistory = false;
   const historyStr = localStorage.getItem('alkitab-history');
