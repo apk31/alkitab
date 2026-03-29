@@ -5,7 +5,7 @@
 // sehingga setiap perubahan di sw.js atau BUILD_TIME
 // otomatis trigger update cache.
 //
-const BUILD_TIME  = '20260328-1858'; // diganti otomatis oleh generate_alkitab.py
+const BUILD_TIME  = '20260328.1910'; // diganti otomatis oleh generate_alkitab.py
 const CACHE_DATA  = 'alkitab-data-v1.1.0';          // JSON ayat (jarang berubah)
 const CACHE_SHELL = 'alkitab-shell-' + BUILD_TIME; // shell app (fresh tiap deploy)
 
@@ -41,8 +41,29 @@ self.addEventListener('activate', event => {
 // ── Fetch ─────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-// App shell (HTML/manifest): network-first → selalu dapat versi terbaru
-if (
+
+  // 1. DATA JSON (FIRST PRIORITY)
+  if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(res => {
+          if (res.ok) {
+            caches.open(CACHE_DATA).then(cache => cache.put(event.request, res.clone()));
+          }
+          return res;
+        })
+        .catch(() =>
+          caches.match(event.request)
+            .then(cached => cached || new Response('{}', {
+              headers: { 'Content-Type': 'application/json' }
+            }))
+        )
+    );
+    return; // ✅ IMPORTANT
+  }
+
+  // 2. APP SHELL (HTML)
+  if (
     url.pathname.endsWith('.html') ||
     url.pathname.endsWith('/') ||
     url.pathname === '/' ||
@@ -54,31 +75,19 @@ if (
           if (res.ok) caches.open(CACHE_SHELL).then(c => c.put(event.request, res.clone()));
           return res;
         })
-        .catch(() => caches.match(event.request)
-          .then(cached => cached || caches.match('./index.html')))
+        .catch(() =>
+          caches.match(event.request)
+            .then(cached => cached || caches.match('./index.html'))
+        )
     );
-  // Data JSON ayat: cache-first + background revalidate
-if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
-  event.respondWith(
-    fetch(event.request)
-      .then(res => {
-        if (res.ok) {
-          caches.open(CACHE_DATA).then(cache => cache.put(event.request, res.clone()));
-        }
-        return res;
-      })
-      .catch(() => 
-        caches.match(event.request)
-          .then(cached => cached || new Response('{}', { headers: { 'Content-Type': 'application/json' } }))
-      )
-  );
-    return;
-    
+    return; // ✅ IMPORTANT
   }
 
-  // Google Fonts: cache-first (tidak pernah berubah)
-  if (url.hostname.includes('fonts.gstatic.com') ||
-      url.hostname.includes('fonts.googleapis.com')) {
+  // 3. GOOGLE FONTS
+  if (
+    url.hostname.includes('fonts.gstatic.com') ||
+    url.hostname.includes('fonts.googleapis.com')
+  ) {
     event.respondWith(
       caches.match(event.request).then(cached =>
         cached || fetch(event.request).then(res => {
@@ -87,14 +96,13 @@ if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
         }).catch(() => new Response('', { status: 408 }))
       )
     );
-    return;
+    return; // ✅ IMPORTANT
   }
 
-  // Default
-  event.respondWith(fetch(event.request).catch(() => caches.match('./index.html')));
-  return;
-  
-}
+  // 4. DEFAULT
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match('./index.html'))
+  );
 });
 
 // ── Terima pesan force-update dari halaman ────────────────────
