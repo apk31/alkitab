@@ -1,3 +1,8 @@
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    showHome();
+  }
+});
 // ── Book list ────────────────────────────────────────────────
 const BOOKS = [
   {no:1,abbr:"Kej",name:"Kejadian",chapter:50,t:"old"},
@@ -227,6 +232,7 @@ function selectBook(book, ch = 1) {
 let isLoadingChapter = false;
 
 async function loadChapter() {
+  console.log('LOAD CHAPTER TRIGGERED');
   if (isLoadingChapter) return; // Prevent concurrent loads
   isLoadingChapter = true;
   
@@ -361,7 +367,7 @@ async function renderVerses(verses) {
     wrap.className = 'verse-wrap';
     wrap.dataset.verse = v.v;
 
-    const numEl = document.createElement('sup');
+    const numEl = document.createElement('div');
     numEl.className = 'verse-number' + (firstVerse ? ' v1' : '');
     numEl.textContent = v.v;
     numEl.addEventListener('click', () => {
@@ -984,8 +990,14 @@ function startWelcomeAnimations() {
 // ── Init ─────────────────────────────────────────────────────
 (async function init() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
+  // 🔥 HARD RESET UI FIRST
+  curBook = null;
+  chapterContent.style.display = 'none';
+  welcomeScreen.style.display = 'block';
+  console.log('INIT RUN');
+console.log('curBook:', curBook);
   renderBooks();
-  renderContinueReading();
+  // renderContinueReading();
   showHome();
   
   // ✦ NEW: Cek riwayat bacaan terakhir
