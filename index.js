@@ -237,6 +237,7 @@ let isLoadingChapter = false;
 
 async function loadChapter() {
   if (!curBook) return;
+  console.trace('LOAD CHAPTER TRACE');
   console.log('LOAD CHAPTER TRIGGERED');
   if (isLoadingChapter) return; // Prevent concurrent loads
   isLoadingChapter = true;

@@ -5,7 +5,7 @@
 // sehingga setiap perubahan di sw.js atau BUILD_TIME
 // otomatis trigger update cache.
 //
-const BUILD_TIME  = '20260328.1910'; // diganti otomatis oleh generate_alkitab.py
+const BUILD_TIME  = '20260328.1926'; // diganti otomatis oleh generate_alkitab.py
 const CACHE_DATA  = 'alkitab-data-v1.1.0';          // JSON ayat (jarang berubah)
 const CACHE_SHELL = 'alkitab-shell-' + BUILD_TIME; // shell app (fresh tiap deploy)
 
@@ -47,11 +47,14 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(res => {
-          if (res.ok) {
-            caches.open(CACHE_DATA).then(cache => cache.put(event.request, res.clone()));
-          }
-          return res;
-        })
+  const resClone = res.clone(); // 🔥 clone FIRST
+
+  if (res.ok) {
+    caches.open(CACHE_DATA).then(cache => cache.put(event.request, resClone));
+  }
+
+  return res;
+})
         .catch(() =>
           caches.match(event.request)
             .then(cached => cached || new Response('{}', {
@@ -72,9 +75,14 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(res => {
-          if (res.ok) caches.open(CACHE_SHELL).then(c => c.put(event.request, res.clone()));
-          return res;
-        })
+  const resClone = res.clone(); // 🔥 same fix
+
+  if (res.ok) {
+    caches.open(CACHE_SHELL).then(c => c.put(event.request, resClone));
+  }
+
+  return res;
+})
         .catch(() =>
           caches.match(event.request)
             .then(cached => cached || caches.match('./index.html'))
@@ -91,9 +99,14 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.match(event.request).then(cached =>
         cached || fetch(event.request).then(res => {
-          if (res.ok) caches.open(CACHE_SHELL).then(c => c.put(event.request, res.clone()));
-          return res;
-        }).catch(() => new Response('', { status: 408 }))
+  const resClone = res.clone(); // 🔥 same fix
+
+  if (res.ok) {
+    caches.open(CACHE_SHELL).then(c => c.put(event.request, resClone));
+  }
+
+  return res;
+}).catch(() => new Response('', { status: 408 }))
       )
     );
     return; // ✅ IMPORTANT
