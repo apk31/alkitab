@@ -583,9 +583,10 @@
 }
 
 .verse-wrap {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  align-items: start;
+  column-gap: 12px;
 }
 
 .verse-meta {
@@ -609,7 +610,7 @@
   padding: 2px 6px;
   line-height: 1;
 
-  align-self: flex-start;
+  align-self: start;
 }
 
 .verse-bm-btn {

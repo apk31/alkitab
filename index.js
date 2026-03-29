@@ -1010,17 +1010,16 @@ console.log('curBook:', curBook);
   showHome();
   isAppReady = true;
   // ✦ NEW: Cek riwayat bacaan terakhir
-  let loadedFromHistory = false;
-  const historyStr = localStorage.getItem('alkitab-history');
-  if (historyStr) {
-    try {
-      const h = JSON.parse(historyStr);
-      const book = BOOKS.find(b => b.abbr === h.abbr);
-      if (book) {
-        selectBook(book, h.ch);
-        loadedFromHistory = true;
-      }
-    } catch(e) {}
+  // let loadedFromHistory = false;
+  // const historyStr = localStorage.getItem('alkitab-history');
+  // if (historyStr) {
+  //   try {
+  //     const h = JSON.parse(historyStr);
+  //     const book = BOOKS.find(b => b.abbr === h.abbr);
+  //     if (book) {selectBook(book, h.ch);
+  //       // loadedFromHistory = true;
+  //     }
+  //   } catch(e) {}
   }
   
   // Hanya tampilkan layar selamat datang jika tidak ada riwayat
