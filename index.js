@@ -232,6 +232,7 @@ function selectBook(book, ch = 1) {
 let isLoadingChapter = false;
 
 async function loadChapter() {
+  if (!curBook) return;
   console.log('LOAD CHAPTER TRIGGERED');
   if (isLoadingChapter) return; // Prevent concurrent loads
   isLoadingChapter = true;
@@ -993,7 +994,8 @@ function startWelcomeAnimations() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
   // 🔥 HARD RESET UI FIRST
   curBook = null;
-  
+  chapterSelect.value = '';
+chapterSelect.style.display = 'none';
   chapterContent.style.display = 'none';
   welcomeScreen.style.display = 'block';
   console.log('INIT RUN');
