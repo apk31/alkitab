@@ -178,25 +178,21 @@ function renderContinueReading() {
   const book = BOOKS.find(b => b.abbr === abbr);
   if (!book) return;
 
-  const floating = document.getElementById('continue-floating');
+  const banner = document.getElementById('continue-banner');
+  const text = document.getElementById('cb-text');
 
-floating.classList.add('show');
+  text.textContent = `Lanjutkan Bacaan:   ${book.name} ${ch}`;
 
-floating.querySelector('.cf-title').textContent = book.name;
-floating.querySelector('.cf-sub').textContent = `Pasal ${ch}`;
-  continueCard.querySelector('.continue-title').textContent = book.name;
-  continueCard.querySelector('.continue-subtitle').textContent = `Pasal ${ch}`;
+  banner.classList.add('show');
 
-  continueCard.onclick = null; // reset first
+  document.getElementById('cb-open').onclick = () => {
+    selectBook(book, ch);
+    banner.classList.remove('show');
+  };
 
-document.getElementById('cf-open').onclick = () => {
-  selectBook(book, ch);
-  floating.classList.remove('show');
-};
-
-document.getElementById('cf-close').onclick = () => {
-  floating.classList.remove('show');
-};
+  document.getElementById('cb-dismiss').onclick = () => {
+    banner.classList.remove('show');
+  };
 }
 
 // ── Render book list ─────────────────────────────────────────
@@ -459,6 +455,7 @@ function showHome() {
 
   welcomeScreen.style.display = 'block';
   renderContinueReading();
+  startWelcomeAnimations();
 }
 function showContent() {
   loadingEl.style.display = 'none';
@@ -938,24 +935,39 @@ const FEATURED_VERSES = [
   { q: '"Mazmur bagi Allah kami itu baik, bahkan indah dan layaklah memuji-muji Dia."', r: '— Mazmur 147:1' },
 ];
 
+// ✅ ADDED: global timeout holders (put this OUTSIDE the function, near top of file)
+let hintTimeout = null;
+let verseTimeout = null;
+
+
 function startWelcomeAnimations() {
   const hintDefault  = document.getElementById('hint-default');
   const hintTutorial = document.getElementById('hint-tutorial');
   const cardInner    = document.getElementById('verse-card-inner');
   const vodQuote     = document.getElementById('vod-quote');
   const vodCite      = document.getElementById('vod-cite');
+  
   if (!hintDefault || !cardInner) return;
 
-  // ── Cycling hint: default (5s) → tutorial (9s) → default → ...
-  // hintDefault sudah visible dari awal, jadi siklus pertama langsung ke tutorial
+  // 🔥 ADDED: CLEAR PREVIOUS LOOPS (VERY IMPORTANT)
+  if (hintTimeout) {
+    clearTimeout(hintTimeout);
+    hintTimeout = null;
+  }
+  if (verseTimeout) {
+    clearTimeout(verseTimeout);
+    verseTimeout = null;
+  }
+
+  // ── Cycling hint ─────────────────────────────
   let verseIdx = 0;
+
   function showHint(el) {
-    // fade out semua
     [hintDefault, hintTutorial].forEach(h => {
       h.classList.remove('visible');
       h.classList.add('hidden');
     });
-    // fade in target setelah transisi selesai
+
     setTimeout(() => {
       el.classList.remove('hidden');
       el.classList.add('visible');
@@ -963,40 +975,51 @@ function startWelcomeAnimations() {
   }
 
   function runHintCycle() {
-    // Tampilkan tutorial
     showHint(hintTutorial);
-    // Setelah 9 detik, kembali ke default
-    setTimeout(() => {
+
+    // 🔥 EDITED: store timeout reference
+    hintTimeout = setTimeout(() => {
       showHint(hintDefault);
-      // Setelah 5 detik, ulangi
-      setTimeout(runHintCycle, 5000);
+
+      // 🔥 EDITED: chain properly with tracking
+      hintTimeout = setTimeout(runHintCycle, 5000);
+
     }, 9000);
   }
-  // Mulai siklus setelah 5 detik (beri waktu baca teks default dulu)
-  setTimeout(runHintCycle, 5000);
 
-  // ── Cycling verse card: ganti tiap 3 detik ──
+  // 🔥 EDITED: store initial timeout
+  hintTimeout = setTimeout(runHintCycle, 5000);
+
+
+  // ── Cycling verse card ───────────────────────
   function nextVerse() {
-    // Step 1: fade out (sama persis dengan pola showHint)
     cardInner.classList.remove('verse-visible');
     cardInner.classList.add('verse-hidden');
-    // Step 2: setelah transition selesai (700ms), ganti konten lalu fade in
+
     setTimeout(() => {
       verseIdx = (verseIdx + 1) % FEATURED_VERSES.length;
       const v = FEATURED_VERSES[verseIdx];
+
       vodQuote.textContent = v.q;
       vodCite.textContent  = v.r;
-      // Step 3: fade in di frame berikutnya supaya browser register perubahan class
+
       requestAnimationFrame(() => {
         cardInner.classList.remove('verse-hidden');
         cardInner.classList.add('verse-visible');
       });
     }, 720);
   }
+
   function scheduleNextVerse() {
-    const delay = 10000 + Math.random() * 5000; // 10–15 detik random
-    setTimeout(() => { nextVerse(); scheduleNextVerse(); }, delay);
+    const delay = 10000 + Math.random() * 5000;
+
+    // 🔥 EDITED: track timeout
+    verseTimeout = setTimeout(() => {
+      nextVerse();
+      scheduleNextVerse();
+    }, delay);
   }
+
   scheduleNextVerse();
 }
 
@@ -1032,4 +1055,28 @@ console.log('curBook:', curBook);
   // if (!loadedFromHistory) {
   //   startWelcomeAnimations();
   // }
+
+
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    reg.update();
+
+    if (reg.waiting) {
+      reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+    }
+
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed') {
+          newWorker.postMessage({ type: 'SKIP_WAITING' });
+        }
+      });
+    });
+  });
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload();
+  });
+}
 })();
