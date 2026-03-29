@@ -178,19 +178,25 @@ function renderContinueReading() {
   const book = BOOKS.find(b => b.abbr === abbr);
   if (!book) return;
 
-  continueCard.style.display = 'block';
+  const floating = document.getElementById('continue-floating');
+
+floating.classList.add('show');
+
+floating.querySelector('.cf-title').textContent = book.name;
+floating.querySelector('.cf-sub').textContent = `Pasal ${ch}`;
   continueCard.querySelector('.continue-title').textContent = book.name;
   continueCard.querySelector('.continue-subtitle').textContent = `Pasal ${ch}`;
 
   continueCard.onclick = null; // reset first
 
-continueCard.addEventListener('click', () => {
+document.getElementById('cf-open').onclick = () => {
   selectBook(book, ch);
-}, { once: true }); // 🔥 important
-  continueCard.addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-  openHistoryPanel();
-});
+  floating.classList.remove('show');
+};
+
+document.getElementById('cf-close').onclick = () => {
+  floating.classList.remove('show');
+};
 }
 
 // ── Render book list ─────────────────────────────────────────

@@ -1126,4 +1126,64 @@
       #toast { bottom: 32px; }
       #desktop-sidebar-toggle { display: flex; margin-right: 8px; } /* Munculkan tombol */
     }
-  
+  #continue-floating {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: var(--parchment);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  z-index: 300;
+  box-shadow: 0 6px 24px rgba(0,0,0,.35);
+  opacity: 0;
+  transition: all .25s ease;
+}
+
+#continue-floating.show {
+  display: flex;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.cf-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cf-label {
+  font-size: .7rem;
+  color: var(--gold);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.cf-title {
+  font-weight: 700;
+}
+
+.cf-sub {
+  font-size: .8rem;
+  opacity: .7;
+}
+
+#cf-open {
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+#cf-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+}
