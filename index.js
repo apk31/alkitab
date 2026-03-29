@@ -1023,7 +1023,7 @@ console.log('curBook:', curBook);
   // }
   
   // Hanya tampilkan layar selamat datang jika tidak ada riwayat
-  if (!loadedFromHistory) {
-    startWelcomeAnimations();
-  }
+  // if (!loadedFromHistory) {
+  //   startWelcomeAnimations();
+  // }
 })();
