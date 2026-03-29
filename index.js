@@ -1020,7 +1020,7 @@ console.log('curBook:', curBook);
   //       // loadedFromHistory = true;
   //     }
   //   } catch(e) {}
-  }
+  // }
   
   // Hanya tampilkan layar selamat datang jika tidak ada riwayat
   if (!loadedFromHistory) {
