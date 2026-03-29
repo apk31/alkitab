@@ -388,9 +388,14 @@ async function renderVerses(verses) {
       await toggleBookmark(v, wrap, bmBtn);
     });
 
-    wrap.appendChild(numEl);
-    wrap.appendChild(textEl);
-    wrap.appendChild(bmBtn);
+    const leftCol = document.createElement('div');
+leftCol.className = 'verse-meta';
+
+leftCol.appendChild(numEl);
+leftCol.appendChild(bmBtn);
+
+wrap.appendChild(leftCol);
+wrap.appendChild(textEl);
     versesEl.appendChild(wrap);
     firstVerse = false;
   });
@@ -429,10 +434,19 @@ function showLoading() {
   errorEl.style.display = 'none';
   loadingEl.style.display = 'block';
 }
+function showHome() {
+  chapterContent.style.display = 'none';
+  errorEl.style.display = 'none';
+  loadingEl.style.display = 'none';
+
+  welcomeScreen.style.display = 'block';
+  renderContinueReading();
+}
 function showContent() {
   loadingEl.style.display = 'none';
   errorEl.style.display = 'none';
   welcomeScreen.style.display = 'none';
+  continueCard.style.display = 'none';
   chapterContent.style.display = 'block';
   chapterContent.classList.remove('fade-in');
   void chapterContent.offsetWidth;
@@ -627,6 +641,7 @@ function closeBookmarkPanel() {
     document.getElementById('bnav-bookmark').classList.remove('active');
 }
 function openHistoryPanel() {
+  console.log('history clicked');
   closeSearchPanel();
   closeBookmarkPanel();
   closeSidebar();
@@ -642,6 +657,7 @@ function closeHistoryPanel() {
   document.body.classList.remove('no-overscroll');
 }
 historyBtn.addEventListener('click', openHistoryPanel);
+console.log('history button bind success');
 historyCloseBtn.addEventListener('click', closeHistoryPanel);
 async function renderBookmarkList() {
   const listEl = document.getElementById('bookmark-list');
@@ -970,6 +986,7 @@ function startWelcomeAnimations() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
   renderBooks();
   renderContinueReading();
+  showHome();
   
   // ✦ NEW: Cek riwayat bacaan terakhir
   let loadedFromHistory = false;

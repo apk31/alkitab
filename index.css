@@ -477,7 +477,7 @@
   visibility: hidden;
   position: fixed;
   top: 0;
-  left: var(--sidebar-w);
+  left: 0;
   right: 0;
   bottom: 0;
   background: var(--parchment);
@@ -580,6 +580,32 @@
 
   transform: translateX(-6px) scale(0.85);
   transition: all .22s ease;
+}
+
+.verse-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.verse-meta {
+  width: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.verse-number {
+  margin: 0;
+}
+
+.verse-bm-btn {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  align-self: center;
 }
 
 .verse-wrap.verse-active .verse-bm-btn,
@@ -1074,6 +1100,14 @@
 
     /* Desktop: sembunyikan row wrapper, bottom-nav */
     @media (min-width: 769px) {
+      #sidebar:not(.closed) ~ #main #history-panel,
+  #history-panel {
+    left: var(--sidebar-w);
+  }
+
+  #sidebar.closed ~ #main #history-panel {
+    left: 0;
+  }
       #topbar-row1, #topbar-row2 { display: contents; }
       #bottom-nav { display: none !important; }
       #install-banner { bottom: 24px; }
