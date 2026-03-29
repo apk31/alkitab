@@ -57,9 +57,8 @@ if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
           .then(cached => cached || new Response('{}', { headers: { 'Content-Type': 'application/json' } }))
       )
   );
-  return;
   // App shell (HTML/manifest): network-first → selalu dapat versi terbaru
-  if (
+if (
     url.pathname.endsWith('.html') ||
     url.pathname.endsWith('/') ||
     url.pathname === '/' ||
@@ -93,6 +92,9 @@ if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
 
   // Default
   event.respondWith(fetch(event.request).catch(() => caches.match('./index.html')));
+  return;
+  
+}
 });
 
 // ── Terima pesan force-update dari halaman ────────────────────

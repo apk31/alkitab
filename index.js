@@ -472,6 +472,7 @@ nextBtn.addEventListener('click', () => {
   if (curChapter < curBook.chapter) { curChapter++; loadChapter(); chapterSelect.value = curChapter; }
 });
 chapterSelect.addEventListener('change', () => {
+  if (!curBook) return; 
   curChapter = parseInt(chapterSelect.value);
   loadChapter();
 });
@@ -992,6 +993,7 @@ function startWelcomeAnimations() {
   try { await openDB(); } catch(e) { console.warn('IndexedDB unavailable:', e); }
   // 🔥 HARD RESET UI FIRST
   curBook = null;
+  
   chapterContent.style.display = 'none';
   welcomeScreen.style.display = 'block';
   console.log('INIT RUN');
