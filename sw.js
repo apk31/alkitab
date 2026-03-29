@@ -13,7 +13,7 @@ const SHELL_FILES = [
   './',
   './index.html',
   './manifest.json',
-];}
+];
 
 // ── Install ───────────────────────────────────────────────────
 self.addEventListener('install', event => {
