@@ -14,6 +14,7 @@
   <meta name="msapplication-config" content="browserconfig.xml">
   <meta name="msapplication-TileColor" content="#1a1209">
   <meta name="theme-color" content="#1a1209" />
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Alkitab TB" />
@@ -28,7 +29,9 @@
 <aside id="sidebar">
   <div id="sidebar-header">
     <h1>✝ Alkitab</h1>
-    <p>Terjemahan Baru · 1974</p>
+    <button id="version-trigger-btn" class="version-badge">
+      Terjemahan Baru (TB) <svg class="ic" viewBox="0 0 448 512"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+    </button>
   </div>
   <div id="testament-tabs">
     <button class="tab-btn active" data-t="old">Perjanjian Lama</button>
@@ -98,8 +101,8 @@
     </div>
     <!-- Baris 2: navigasi pasal + font -->
     <div id="topbar-row2">
-      <select id="chapter-select" style="display:none"></select>
       <button class="nav-btn" id="prev-btn" disabled>&#8592;</button>
+      <select id="chapter-select" style="display:none"></select>
       <button class="nav-btn" id="next-btn" disabled>&#8594;</button>
       <div id="font-controls">
         <button class="font-btn" id="history-btn" title="Riwayat">
@@ -140,11 +143,6 @@
         </div>
       </div>
     </div>
-    <div id="continue-reading-card" style="display:none;">
-  <div class="continue-label">Lanjutkan Bacaan</div>
-  <div class="continue-title"></div>
-  <div class="continue-subtitle"></div>
-</div>
     <div id="loading" style="display:none">
       <div class="spinner"></div>
       <p>Memuat…</p>
@@ -187,10 +185,10 @@
   <div id="search-panel-header">
     <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
       <h2 style="display:flex;align-items:center;gap:8px;margin:0;"><svg class="ic" style="color:var(--gold);width:1em;height:1em;flex-shrink:0" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>Cari Ayat</h2>
-      <button id="ft-close-btn" title="Tutup" style="flex-shrink:0"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
+      <button id="ft-close-btn" title="Tutup" style="flex-shrink:0"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></button>
     </div>
     <div id="ft-search-wrap">
-      <input type="search" id="ft-input" placeholder="Ketik kata atau frasa…" autocomplete="off" />
+      <input type="search" id="ft-input" placeholder="Ketik kata atau frasa… (gunakan &quot;kata atau frasa&quot; untuk pencarian persis)" autocomplete="off" />
     </div>
     <div id="ft-status">Ketuk tombol Cari di bawah untuk memulai</div>
   </div>
@@ -201,10 +199,41 @@
 <div id="bookmark-panel">
   <div id="bookmark-panel-header" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(184,137,42,.2);">
     <h2 style="display:flex;align-items:center;gap:8px;margin:0;font-family:var(--font-display);font-size:1.2rem;color:var(--ink);"><svg class="ic" style="color:var(--gold);width:1em;height:1em;flex-shrink:0" viewBox="0 0 384 512"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/></svg>Bookmark</h2>
-    <button id="bm-close-btn" title="Tutup" style="width:36px;height:36px;background:none;border:1px solid rgba(184,137,42,.3);border-radius:8px;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg><span class="icon-fallback">✕</span></button>
+    <button id="bm-close-btn" title="Tutup" style="width:36px;height:36px;background:none;border:1px solid rgba(184,137,42,.3);border-radius:8px;color:var(--gold);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg class="ic" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></button>
   </div>
   <div id="bookmark-list"></div>
   
+</div>
+<div id="version-panel">
+  <div id="version-panel-header">
+    <h2>Manajemen Versi</h2>
+    <button id="vp-close-btn" title="Tutup">✕</button>
+  </div>
+  
+  <div class="vp-tabs">
+    <button class="vp-tab active" data-target="installed">Terpasang</button>
+    <button class="vp-tab" data-target="available">Tersedia</button>
+  </div>
+
+  <div id="vp-installed" class="vp-content active">
+    <div class="version-item active-version">
+      <div class="v-info">
+        <span class="v-title">Terjemahan Baru (TB)</span>
+        <span class="v-size">5.1 MB · Default</span>
+      </div>
+      <button class="v-action-btn select-btn">Pilih</button>
+    </div>
+  </div>
+
+  <div id="vp-available" class="vp-content" style="display:none;">
+    <div class="version-item">
+      <div class="v-info">
+        <span class="v-title">New King James Version (NKJV)</span>
+        <span class="v-size">Membutuhkan unduhan</span>
+      </div>
+      <button class="v-action-btn download-btn">Unduh</button>
+    </div>
+  </div>
 </div>
 <script src="search.js"></script>
 <script src="index.js"></script>

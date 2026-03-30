@@ -15,11 +15,6 @@
       --font-body:   'Crimson Pro', Georgia, serif;
       --font-display:'Playfair Display', Georgia, serif;
     }
-    /* Hide fallback text when FA loads fine */
-    .icon-fallback { display: none; }
-    .no-fa .icon-fallback { display: inline; }
-    /* Make sure FA icons in buttons don't break layout */
-    .fa-solid, .fa-regular { font-style: normal; }
 
     html { scroll-behavior: smooth; }
     body {
@@ -62,6 +57,213 @@
       letter-spacing: .08em;
       text-transform: uppercase;
     }
+
+    /* Styling for the clickable version badge */
+.version-badge {
+  background: none; border: none;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: .85rem;
+  letter-spacing: .05em;
+  padding: 4px 0;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  border-bottom: 1px dashed var(--gold);
+  margin-top: 6px;
+}
+
+/* ── Version Panel Base ── */
+#version-panel {
+  position: fixed;
+  z-index: 1000;
+  background: var(--bg-color, #faf9f6); /* Uses your theme background */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+}
+
+/* Mobile: Sleek Bottom Sheet */
+@media (max-width: 768px) {
+  #version-panel {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-height: 85vh; /* Prevents it from covering the whole screen */
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    transform: translateY(100%);
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
+    padding-bottom: env(safe-area-inset-bottom, 20px); /* For iPhones */
+  }
+  #version-panel.open {
+    transform: translateY(0);
+  }
+}
+
+/* Desktop: Centered Modal */
+@media (min-width: 769px) {
+  #version-panel {
+    top: 50%;
+    left: 50%;
+    width: 450px;
+    max-height: 80vh;
+    border-radius: 16px;
+    transform: translate(-50%, -45%);
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  }
+  #version-panel.open {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* ── Panel Header & Tabs ── */
+#version-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(184, 137, 42, 0.15);
+}
+
+#version-panel-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-family: var(--font-display, serif);
+  color: var(--gold, #b8892a);
+}
+
+#vp-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--ink-light, #666);
+  padding: 8px;
+}
+
+.vp-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.vp-tab {
+  flex: 1;
+  padding: 14px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--ink-light, #666);
+  transition: 0.2s ease;
+}
+
+.vp-tab.active {
+  border-bottom-color: var(--gold, #b8892a);
+  color: var(--gold, #b8892a);
+}
+
+.vp-content {
+  overflow-y: auto;
+  padding: 20px 24px;
+  flex: 1;
+}
+
+/* ── The Anti-Crumple Magic ── */
+.version-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(184, 137, 42, 0.2);
+  border-radius: 12px;
+  gap: 16px; /* Creates an unbreakable wall between text and button */
+}
+
+.version-item.active-version {
+  border-color: var(--gold, #b8892a);
+  background: rgba(184, 137, 42, 0.05);
+}
+
+.v-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Takes up remaining space */
+  min-width: 0; /* CRITICAL: Allows text to be truncated */
+}
+
+.v-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  white-space: nowrap; /* Forces text to stay on one line */
+  overflow: hidden; /* Hides the overflow */
+  text-overflow: ellipsis; /* Adds '...' at the end of long text */
+  color: var(--ink, #222);
+}
+
+.v-size {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-top: 6px;
+  color: var(--ink-light, #666);
+}
+
+.v-action-btn {
+  flex-shrink: 0; /* CRITICAL: Prevents button from ever shrinking */
+  padding: 8px 20px;
+  border-radius: 24px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--gold, #b8892a);
+  background: transparent;
+  color: var(--gold, #b8892a);
+  transition: 0.2s ease;
+}
+
+.v-action-btn:hover {
+  background: var(--gold, #b8892a);
+  color: #fff;
+}
+
+/* Tabs matching your design */
+.vp-tabs { display: flex; border-bottom: 1px solid rgba(184,137,42,.2); }
+.vp-tab {
+  flex: 1; padding: 14px; background: none; border: none;
+  font-family: var(--font-display); font-size: 1rem; color: var(--ink-light);
+  cursor: pointer; transition: color .2s, background .2s;
+}
+.vp-tab.active {
+  color: var(--gold); background: rgba(184,137,42,.05);
+  border-bottom: 2px solid var(--gold);
+}
+
+/* List Items */
+.vp-content { flex: 1; overflow-y: auto; padding: 16px 24px; }
+.version-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px; border-radius: 12px; background: rgba(255,255,255,.5);
+  border: 1px solid rgba(184,137,42,.15); margin-bottom: 12px;
+}
+.version-item.active-version { border-color: var(--gold); background: rgba(184,137,42,.08); }
+.v-info { display: flex; flex-direction: column; gap: 4px; }
+.v-title { font-weight: 700; color: var(--ink); }
+.v-size { font-size: .8rem; color: var(--ink-light); }
+
+/* Buttons */
+.v-action-btn {
+  padding: 6px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none;
+}
+.download-btn { background: var(--gold); color: var(--ink); }
+.delete-btn { background: rgba(139,32,32,.1); color: var(--red-accent); }
+.select-btn { background: var(--ink); color: var(--parchment); }
+    
     #testament-tabs {
       display: flex;
       border-bottom: 1px solid rgba(255,255,255,.08);
@@ -223,42 +425,7 @@
       cursor: pointer;
       outline: none;
     }
-    #continue-reading-card {
-  margin: 28px auto 0;
-  max-width: 420px;
-  padding: 18px 22px;
-  border: 1px solid rgba(184,137,42,.18);
-  border-radius: 16px;
-  background: rgba(184,137,42,.05);
-  cursor: pointer;
-  transition: all .2s ease;
-}
-
-#continue-reading-card:hover {
-  background: rgba(184,137,42,.08);
-  transform: translateY(-2px);
-}
-
-.continue-label {
-  font-size: .78rem;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  margin-bottom: 6px;
-}
-
-.continue-title {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.continue-subtitle {
-  font-size: .95rem;
-  color: var(--ink-light);
-  margin-top: 4px;
-}
+    
     .nav-btn {
       width: 32px; height: 32px;
       display: flex; align-items: center; justify-content: center;
@@ -317,6 +484,7 @@
       gap: 8px;
       align-items: center;
     }
+    
     #ft-input {
       flex: 1;
       padding: 10px 16px;
@@ -582,36 +750,6 @@
   transition: all .22s ease;
 }
 
-.verse-wrap {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  align-items: start;
-  column-gap: 12px;
-}
-
-.verse-meta {
-  width: 28px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.verse-number {
-  font-family: var(--font-body);
-  font-size: .75rem;
-  font-weight: 700;
-  color: var(--gold);
-
-  background: rgba(184,137,42,.12);
-  border-radius: 4px;
-
-  padding: 2px 6px;
-  line-height: 1;
-
-  align-self: start;
-}
 
 .verse-bm-btn {
   margin: 0;
@@ -767,60 +905,73 @@
       line-height: 1.95;
       color: var(--ink-mid);
     }
-    .verse-number {
-  flex: 0 0 28px;
-  width: 28px;
-  height: 28px;
-  transition: transform 0.18s ease, background 0.18s ease;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--gold);
-
-  line-height: 1;
-  margin: 0;
-  padding: 0;
-
-  background: rgba(184,137,42,.10);
-  border-radius: 6px;
-
-  transform: translateY(2px);
-}
     .verse-number:hover { color: var(--red-accent); }
     .verse-number.v1 { margin-left: 0; }
     .verse-number:active {
   transform: scale(0.92);
 }
     /* ✦ NEW: Forces every verse onto its own line with a nice gap */
-    .verse-wrap {
+/* ── Verse Layout Refactor ── */
+.verse-wrap {
   display: flex;
+  align-items: flex-start; /* Locks the number to the top-left */
+  gap: 16px; /* Clean spacing between number and text */
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 12px;
+  cursor: pointer; /* Turns the mouse into a pointer so users know it's clickable */
+  transition: background 0.2s ease;
+  -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile */
+}
+
+.verse-wrap:hover {
+  background: rgba(184, 137, 42, 0.03); /* Very subtle hover effect */
+}
+
+.verse-wrap.verse-active {
+  background: rgba(184, 137, 42, 0.08); /* Active highlight */
+}
+
+/* The left column holding the number and bookmark */
+.verse-meta {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-  position: relative;
+  /* Using 'em' instead of 'px' means the width scales with the A+/A- buttons! */
+  min-width: 1.5em; 
+  flex-shrink: 0; /* Prevents the column from being squished by long text */
+  margin-top: 0.25em; /* Nudges the number down perfectly in line with the text */
 }
-    .verse-text {
-  flex: 1;
+
+.verse-number {
+  /* 0.75em makes it exactly 75% the size of the verse text, scaling automatically */
+  font-size: 0.75em; 
+  font-weight: 700;
+  color: var(--gold, #b8892a);
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.verse-text {
+  flex: 1; /* Takes up all remaining space */
+  line-height: 1.6;
+  color: var(--ink, #222);
+}
+
+/* Ensure headings have proper spacing now that they are block elements */
+.section-heading {
   display: block;
-  line-height: 1.5;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.15em;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 1.8em 0 0.8em 0;
+  line-height: 1;
 }
     /* Sub-bab (index 0 / v == 0) */
-    /* Sub-bab (index 0 / v == 0) */
-    .section-heading {
-      display: block;
-      font-family: var(--font-display);
-      /* font-size diwarisi dari #verses-container agar ikut A+/A- */
-      font-size: 1.05em;
-      font-weight: 700;
-      color: var(--ink);
-      text-align: center;
-      margin: 28px 0 10px;
-      letter-spacing: .01em;
-    }
+
     /* Highlight: hanya warna background ringan, TANPA spacing/padding ekstra */
     .verse-wrap.verse-active .verse-text,
     .verse-wrap.highlighted-verse .verse-text {
@@ -999,12 +1150,11 @@
       #sidebar {
         top: auto;
         bottom: 60px;
-        left: 0; right: 0;
+        right: 0;
         width: 100%;
         height: 70vh;
         transform: translateY(100%);
         border-radius: 20px 20px 0 0;
-        box-shadow: none;
       }
       #sidebar.open {
         transform: translateY(0);
@@ -1043,23 +1193,21 @@
         min-height: 56px;
       }
 
+      /* Nama kitab clickable di mobile (MERGED) */
       #chapter-label {
         min-width: unset;
         font-size: 1.15rem;
         font-weight: 700;
         flex: 1;
-        text-align: center;
-      }
-      .label-mobile { display: inline; }
-      .label-desktop { display: none; }
-      /* Nama kitab clickable di mobile */
-      #chapter-label {
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 8px;
         justify-content: center;
       }
+      .label-mobile { display: inline; }
+      .label-desktop { display: none; }
+      
       #chapter-label::after {
         content: '';
         display: inline-block;
@@ -1090,7 +1238,6 @@
       }
       .nav-btn {
         width: 40px; height: 40px;
-        font-size: 1.1rem;
         border-radius: 8px;
         flex-shrink: 0;
       }

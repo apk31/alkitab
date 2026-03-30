@@ -5,23 +5,35 @@
 // sehingga setiap perubahan di sw.js atau BUILD_TIME
 // otomatis trigger update cache.
 //
-const BUILD_TIME  = '20260329.2355'; // diganti otomatis oleh generate_alkitab.py
-const CACHE_DATA  = 'alkitab-data-v1.1.0';          // JSON ayat (jarang berubah)
+const BUILD_TIME  = '20260330.1959'; // diganti otomatis oleh generate_alkitab.py
+const CACHE_DATA  = 'alkitab-data-v2.0.0';          // JSON ayat (jarang berubah)
 const CACHE_SHELL = 'alkitab-shell-' + BUILD_TIME; // shell app (fresh tiap deploy)
 
+// In sw.js - Update this array:
 const SHELL_FILES = [
   './',
   './index.html',
+  './index.css',
+  './index.js',
+  './search.js',
   './manifest.json',
+  './icons/favicon.ico'
 ];
 
 // ── Install ───────────────────────────────────────────────────
 self.addEventListener('install', event => {
   console.log('[SW] Install cache:', CACHE_SHELL);
   event.waitUntil(
-    caches.open(CACHE_SHELL)
-      .then(cache => cache.addAll(SHELL_FILES))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_SHELL).then(cache => {
+      // FIX: Append a cache-buster or use 'reload' to bypass the browser's HTTP cache.
+      // This guarantees the Service Worker always fetches the absolute latest files from your server.
+      return Promise.all(SHELL_FILES.map(url => {
+        return fetch(new Request(url, { cache: 'reload' }))
+          .then(res => cache.put(url, res));
+      }));
+    })
+    // FIX: Removed self.skipWaiting() here. 
+    // The SW must "wait" so the Update Banner can show up in the UI.
   );
 });
 
@@ -65,7 +77,8 @@ self.addEventListener('fetch', event => {
     return; // ✅ IMPORTANT
   }
 
-  // 2. APP SHELL (HTML)
+// 2. APP SHELL (HTML) - FIX: Change to Cache-First for instant offline loading.
+  // Updates will be handled entirely by the SW lifecycle (the banner).
   if (
     url.pathname.endsWith('.html') ||
     url.pathname.endsWith('/') ||
@@ -73,24 +86,16 @@ self.addEventListener('fetch', event => {
     (url.pathname.endsWith('.json') && !url.pathname.includes('/data/'))
   ) {
     event.respondWith(
-      fetch(event.request)
-        .then(res => {
-  const resClone = res.clone(); // 🔥 same fix
-
-  if (res.ok) {
-    caches.open(CACHE_SHELL).then(c => c.put(event.request, resClone));
-  }
-
-  return res;
-})
-        .catch(() =>
-          caches.match(event.request)
-            .then(cached => cached || caches.match('./index.html'))
-        )
+      caches.match(event.request).then(cached => {
+        return cached || fetch(event.request).then(res => {
+          const resClone = res.clone();
+          if (res.ok) caches.open(CACHE_SHELL).then(c => c.put(event.request, resClone));
+          return res;
+        });
+      }).catch(() => caches.match('./index.html'))
     );
-    return; // ✅ IMPORTANT
+    return;
   }
-
   // 3. GOOGLE FONTS
   if (
     url.hostname.includes('fonts.gstatic.com') ||
