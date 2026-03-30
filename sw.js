@@ -5,7 +5,7 @@
 // sehingga setiap perubahan di sw.js atau BUILD_TIME
 // otomatis trigger update cache.
 //
-const BUILD_TIME  = '20260330.1959'; // diganti otomatis oleh generate_alkitab.py
+const BUILD_TIME  = '20260330.2009'; // diganti otomatis oleh generate_alkitab.py
 const CACHE_DATA  = 'alkitab-data-v2.0.0';          // JSON ayat (jarang berubah)
 const CACHE_SHELL = 'alkitab-shell-' + BUILD_TIME; // shell app (fresh tiap deploy)
 
